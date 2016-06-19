@@ -81,7 +81,7 @@ class Signin extends React.Component {
           </View>
           <TouchableHighlight
               underlayColor="white"
-              onPress={this.login.bind(this)}
+              onPress={this.signin.bind(this)}
           >
             <View style={styles.signin}>
               <Text style={styles.whiteFont}>登录</Text>
@@ -100,7 +100,7 @@ class Signin extends React.Component {
     );
   }
 
-  async login(){
+  async signin(){
     if(!this.state.username.trim() || !this.state.password.trim()){
       Alert.alert('请输入用户名和密码');
       return;
