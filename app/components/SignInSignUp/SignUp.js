@@ -29,26 +29,25 @@ class SignUp extends React.Component {
       username: '',
       password: '',
       password2: '',
-      usernameValid: true,
-      passwordValid: true,
-      password2Valid: true,
-      loading: false
+      usernameValid: false,
+      passwordValid: false,
+      password2Valid: false,
+      usernameChecked: false,
+      isLoading: false,
+      isChecking: false
     }
   }
 
   render(){
-    let spinner = this.state.isLoading ?
-            ( <ActivityIndicatorIOS
-                hidden='true'
-                size='large'/> ) :
-            ( <View/>);
+    let spinner = this.state.isLoading ? <ActivityIndicatorIOS size='large'/> : <View/>;
+    let smallspinner = <ActivityIndicatorIOS size='small'/>
 
     let errorIndicator = <View style={styles.icon}>{errorIcon}</View>;
     let checkIndicator = <View style={styles.icon}>{checkIcon}</View>;
 
-    let usernameIndicator = this.state.username.trim() == '' ? null : (this.state.usernameValid ? checkIndicator : errorIndicator);
-    let passwordIndicator = this.state.password.trim() == '' ? null : (this.state.passwordValid ? checkIndicator : errorIndicator);
-    let password2Indicator = this.state.password2.trim() == '' ? null : (this.state.password2Valid ? checkIndicator : errorIndicator);
+    let usernameIndicator = this.state.username.trim() == '' ? null : this.state.isChecking ? smallspinner : this.state.usernameValid ? checkIndicator : errorIndicator;
+    let passwordIndicator = this.state.password.trim() == '' ? null : this.state.passwordValid ? checkIndicator : errorIndicator;
+    let password2Indicator = this.state.password2.trim() == '' ? null : this.state.password2Valid ? checkIndicator : errorIndicator;
 
     return (
         <View style={styles.container}>
@@ -59,10 +58,18 @@ class SignUp extends React.Component {
             <View style={styles.inputContainer}>
               <Image style={styles.inputUsername} source={require('../../images/username.png')} />
               <TextInput
-                  onChangeText={(username) => this.setState({username})}
+                  onChangeText={(username) => {
+                    this.setState({
+                      username,
+                      usernameChecked: false,
+                      usernameValid: this.validateEmail(username)
+                    })
+                  }}
+                  onBlur={this.check.bind(this)}
                   autoCapitalize="none"
+                  autoFocus={true}
                   style={[styles.input, styles.whiteFont]}
-                  placeholder="请输入用户名"
+                  placeholder="用户名(电子邮件)"
                   placeholderTextColor="#FFF"
                   value={this.state.username}
               />
@@ -75,19 +82,21 @@ class SignUp extends React.Component {
                     if(password != this.state.password2){
                       this.setState({
                         password,
+                        passwordValid: !password.trim() == '',
                         password2Valid: false
                       });
                     }else{
                       this.setState({
                         password,
-                        password2Valid: true
+                        passwordValid: !password.trim() == '',
+                        password2Valid: !password.trim() == ''
                       });
                     }
                   }}
                   autoCapitalize="none"
                   password={true}
                   style={[styles.input, styles.whiteFont]}
-                  placeholder="请输入密码"
+                  placeholder="输入密码"
                   placeholderTextColor="#FFF"
                   value={this.state.password}
               />
@@ -105,14 +114,14 @@ class SignUp extends React.Component {
                     }else{
                       this.setState({
                         password2,
-                        password2Valid: true
+                        password2Valid: !password2.trim() == '',
                       });
                     }
                   }}
                   autoCapitalize="none"
                   password={true}
                   style={[styles.input, styles.whiteFont]}
-                  placeholder="请再次输入密码"
+                  placeholder="确认密码"
                   placeholderTextColor="#FFF"
                   value={this.state.password2}
               />
@@ -124,7 +133,7 @@ class SignUp extends React.Component {
           </View>
           <TouchableHighlight
               underlayColor="white"
-              onPress={this.signin.bind(this)}
+              onPress={this.signup.bind(this)}
           >
             <View style={styles.signin}>
               <Text style={styles.whiteFont}>注册</Text>
@@ -143,24 +152,49 @@ class SignUp extends React.Component {
     );
   }
 
-  async signin(){
-    if(!this.state.username.trim() || !this.state.password.trim()){
-      Alert.alert('请输入用户名和密码');
-      return;
-    }
-    this.setState({isLoading: true});
-    let result = await Backend.signin(this.state.username.trim(),this.state.password.trim());
-    let resultJson = await result.json();
+  validateEmail = (email) => {
+    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  };
 
-    if(result.status != 200){
-      this.setState({isLoading: false});
-      Alert.alert(resultJson.message);
+  async check(){
+    if(this.state.usernameValid){
+      this.setState({isChecking: true});
+      let result = await Backend.check(this.state.username.trim());
+      let resultJson = await result.json();
+      console.log('resultJson.length',resultJson.length);
+      if(resultJson.length == 0){
+        this.setState({
+          isChecking: false,
+          usernameChecked: true
+        });
+      }else{
+        this.setState({
+          isChecking: false,
+          usernameChecked: false,
+          usernameValid: false
+        });
+        Alert.alert('用户名(邮箱) \'' + this.state.username + '\' 已经注册过.' )
+      }
+    }
+  }
+
+  async signup(){
+    if(this.state.usernameValid && this.state.passwordValid && this.state.password2Valid && this.state.usernameChecked){
+      this.setState({isLoading: true});
+      let result = await Backend.signup(this.state.username.trim(),this.state.password.trim());
+      let resultJson = await result.json();
+
+      if(result.status != 200){
+        this.setState({isLoading: false});
+        Alert.alert(resultJson.message);
+      }else{
+        Alert.alert('注册成功,请登录');
+        this.props.navigator.pop();
+      }
     }else{
-      let cache = {
-        userInfo: resultJson
-      };
-      AsyncStorage.setItem(require('../../config/appConfig').cache, JSON.stringify(cache));
-      this.props.navigator.resetTo({name:'app'});
+      Alert.alert('请输入合乎要求的用户名和密码');
+      return;
     }
   }
 }

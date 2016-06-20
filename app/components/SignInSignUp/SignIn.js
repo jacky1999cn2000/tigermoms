@@ -24,7 +24,7 @@ class SignIn extends React.Component {
     this.state = {
       username: '',
       password: '',
-      loading: false
+      isLoading: false
     }
   }
 
@@ -37,11 +37,7 @@ class SignIn extends React.Component {
   }
 
   render(){
-    let spinner = this.state.isLoading ?
-            ( <ActivityIndicatorIOS
-                hidden='true'
-                size='large'/> ) :
-            ( <View/>);
+    let spinner = this.state.isLoading ? <ActivityIndicatorIOS size='large'/> : <View/>;
 
     return (
         <View style={styles.container}>
@@ -54,6 +50,7 @@ class SignIn extends React.Component {
               <TextInput
                   onChangeText={(username) => this.setState({username})}
                   autoCapitalize="none"
+                  autoFocus={true}
                   style={[styles.input, styles.whiteFont]}
                   placeholder="用户名"
                   placeholderTextColor="#FFF"
