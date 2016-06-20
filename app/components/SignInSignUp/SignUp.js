@@ -14,25 +14,25 @@ import {
   Alert
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/FontAwesome';
+const errorIcon = (<Icon name="exclamation-circle" size={10} color="red" />);
+const checkIcon = (<Icon name="check-circle" size={10} color="green" />);
+
 import Backend from '../../utils/backend';
 
 const windowSize = Dimensions.get('window');
 
-class SignIn extends React.Component {
+class SignUp extends React.Component {
   constructor(){
     super(...arguments);
     this.state = {
       username: '',
       password: '',
+      password2: '',
+      usernameValid: true,
+      passwordValid: true,
+      password2Valid: true,
       loading: false
-    }
-  }
-
-  async componentWillMount(){
-    //let cache = await AsyncStorage.getItem(require('../../config/appConfig').cache);
-    let cache = await AsyncStorage.getItem('somethingelse');
-    if(cache){
-      this.props.navigator.resetTo({name:'app'});
     }
   }
 
@@ -43,9 +43,16 @@ class SignIn extends React.Component {
                 size='large'/> ) :
             ( <View/>);
 
+    let errorIndicator = <View style={styles.icon}>{errorIcon}</View>;
+    let checkIndicator = <View style={styles.icon}>{checkIcon}</View>;
+
+    let usernameIndicator = this.state.username.trim() == '' ? null : (this.state.usernameValid ? checkIndicator : errorIndicator);
+    let passwordIndicator = this.state.password.trim() == '' ? null : (this.state.passwordValid ? checkIndicator : errorIndicator);
+    let password2Indicator = this.state.password2.trim() == '' ? null : (this.state.password2Valid ? checkIndicator : errorIndicator);
+
     return (
         <View style={styles.container}>
-          <Image style={styles.bg} source={require('../../images/bg9.jpg')} />
+          <Image style={styles.bg} source={require('../../images/bg3.jpg')} />
           <View style={styles.header}>
           </View>
           <View style={styles.inputs}>
@@ -55,25 +62,61 @@ class SignIn extends React.Component {
                   onChangeText={(username) => this.setState({username})}
                   autoCapitalize="none"
                   style={[styles.input, styles.whiteFont]}
-                  placeholder="用户名"
+                  placeholder="请输入用户名"
                   placeholderTextColor="#FFF"
                   value={this.state.username}
               />
+              {usernameIndicator}
             </View>
             <View style={styles.inputContainer}>
               <Image style={styles.inputPassword} source={require('../../images/password.png')} />
               <TextInput
-                  onChangeText={(password) => this.setState({password})}
+                  onChangeText={(password) => {
+                    if(password != this.state.password2){
+                      this.setState({
+                        password,
+                        password2Valid: false
+                      });
+                    }else{
+                      this.setState({
+                        password,
+                        password2Valid: true
+                      });
+                    }
+                  }}
                   autoCapitalize="none"
                   password={true}
                   style={[styles.input, styles.whiteFont]}
-                  placeholder="密码"
+                  placeholder="请输入密码"
                   placeholderTextColor="#FFF"
                   value={this.state.password}
               />
+              {passwordIndicator}
             </View>
-            <View style={styles.forgotContainer}>
-              <Text style={styles.greyFont}>忘记密码</Text>
+            <View style={styles.inputContainer}>
+              <Image style={styles.inputPassword} source={require('../../images/password.png')} />
+              <TextInput
+                  onChangeText={(password2) => {
+                    if(password2 != this.state.password){
+                      this.setState({
+                        password2,
+                        password2Valid: false
+                      });
+                    }else{
+                      this.setState({
+                        password2,
+                        password2Valid: true
+                      });
+                    }
+                  }}
+                  autoCapitalize="none"
+                  password={true}
+                  style={[styles.input, styles.whiteFont]}
+                  placeholder="请再次输入密码"
+                  placeholderTextColor="#FFF"
+                  value={this.state.password2}
+              />
+              {password2Indicator}
             </View>
           </View>
           <View style={styles.spinner}>
@@ -84,16 +127,16 @@ class SignIn extends React.Component {
               onPress={this.signin.bind(this)}
           >
             <View style={styles.signin}>
-              <Text style={styles.whiteFont}>登录</Text>
+              <Text style={styles.whiteFont}>注册</Text>
             </View>
           </TouchableHighlight>
           <View style={styles.signup}>
-            <Text style={styles.greyFont}>没有账户?</Text>
+            <Text style={styles.greyFont}>已有账户?</Text>
             <TouchableHighlight
                 underlayColor="grey"
-                onPress={() => {this.props.navigator.push({name:'signup'});}}
+                onPress={() => {this.props.navigator.pop();}}
             >
-            <Text style={styles.whiteFont}> 注册</Text>
+            <Text style={styles.whiteFont}> 登录</Text>
             </TouchableHighlight>
           </View>
         </View>
@@ -120,7 +163,6 @@ class SignIn extends React.Component {
       this.props.navigator.resetTo({name:'app'});
     }
   }
-
 }
 
 const styles = StyleSheet.create({
@@ -145,6 +187,7 @@ const styles = StyleSheet.create({
       flex: .25
     },
     inputContainer: {
+      flexDirection: 'row',
       padding: 10,
       borderWidth: 1,
       borderBottomColor: '#CCC',
@@ -161,12 +204,16 @@ const styles = StyleSheet.create({
       height: 20
     },
     input: {
-      position: 'absolute',
-      left: 61,
-      top: 12,
-      right: 0,
+      flex: 1,
+      marginLeft: 15,
       height: 20,
       fontSize: 14
+    },
+    icon: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 20,
+      height: 20
     },
     signin: {
       backgroundColor: '#FF3366',
@@ -197,4 +244,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SignIn;
+export default SignUp;
