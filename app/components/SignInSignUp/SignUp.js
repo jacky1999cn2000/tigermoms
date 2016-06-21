@@ -65,7 +65,7 @@ class SignUp extends React.Component {
   }
 
   render(){
-    let headerFlex = this.state.visibleHeight == windowSize.height ? 0.5 : 0.2;
+    let headerFlex = this.state.visibleHeight == windowSize.height ? 0.5 : 0.1;
 
     let spinner = this.state.isLoading ? <ActivityIndicatorIOS size='large'/> : <View/>;
     let smallspinner = <ActivityIndicatorIOS size='small'/>
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
 
     /* * * * * * * * * * * * */
     inputs: {
-      flex: .3,
+      flex: .4,
       marginTop: 20,
       marginBottom: 10
     },
@@ -286,6 +286,7 @@ const styles = StyleSheet.create({
     /* * * * * * * * * * * * */
     inputContainer: {
       padding: 10,
+      flexDirection: 'row',
       borderWidth: 1,
       borderBottomColor: '#CCC',
       borderColor: 'transparent'
@@ -301,12 +302,16 @@ const styles = StyleSheet.create({
       height: 20
     },
     input: {
-      position: 'absolute',
-      left: 61,
-      top: 12,
-      right: 0,
+      flex: 1,
+      marginLeft: 15,
       height: 20,
       fontSize: 14
+    },
+    icon: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 20,
+      height: 20
     },
     forgotContainer: {
       alignItems: 'flex-end',

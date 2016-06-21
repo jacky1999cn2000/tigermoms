@@ -64,7 +64,7 @@ class SignIn extends React.Component {
   }
 
   render(){
-    let headerFlex = this.state.visibleHeight == windowSize.height ? 0.5 : 0.2;
+    let headerFlex = this.state.visibleHeight == windowSize.height ? 0.5 : 0.1;
 
     let spinner = this.state.isLoading ? <ActivityIndicatorIOS size='large'/> : <View/>;
 
