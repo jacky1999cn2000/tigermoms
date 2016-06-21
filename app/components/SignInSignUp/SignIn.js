@@ -9,10 +9,15 @@ import {
   TouchableHighlight,
   Image,
   Dimensions,
+  DeviceEventEmitter,
+  LayoutAnimation,
   AsyncStorage,
   ActivityIndicatorIOS,
   Alert
 } from 'react-native';
+
+import Icon from 'react-native-vector-icons/FontAwesome';
+const wechatIcon = (<Icon name="wechat" size={30} color="#FF3366" />);
 
 import Backend from '../../utils/backend';
 
@@ -24,11 +29,15 @@ class SignIn extends React.Component {
     this.state = {
       username: '',
       password: '',
-      isLoading: false
+      isLoading: false,
+      visibleHeight: windowSize.height,
     }
   }
 
   async componentWillMount(){
+    this.keyboardDidShowListener = DeviceEventEmitter.addListener('keyboardDidShow', this.keyboardDidShow.bind(this));
+    this.keyboardDidHideListener = DeviceEventEmitter.addListener('keyboardDidHide', this.keyboardDidHide.bind(this));
+
     //let cache = await AsyncStorage.getItem(require('../../config/appConfig').cache);
     let cache = await AsyncStorage.getItem('somethingelse');
     if(cache){
@@ -36,62 +45,103 @@ class SignIn extends React.Component {
     }
   }
 
+  componentWillUnmount(){
+    this.keyboardDidShowListener.remove()
+    this.keyboardDidHideListener.remove()
+  }
+
+  keyboardDidShow(e){
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
+    let visibleHeight = windowSize.height - e.endCoordinates.height
+    this.setState({visibleHeight:visibleHeight})
+  }
+
+  keyboardDidHide(e){
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
+    this.setState({
+      visibleHeight: windowSize.height
+    })
+  }
+
   render(){
+    let headerFlex = this.state.visibleHeight == windowSize.height ? 0.5 : 0.2;
+
     let spinner = this.state.isLoading ? <ActivityIndicatorIOS size='large'/> : <View/>;
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {height:this.state.visibleHeight}]}>
           <Image style={styles.bg} source={require('../../images/bg9.jpg')} />
-          <View style={styles.header}>
+
+          <View style={[styles.header,{flex: headerFlex}]}>
           </View>
-          <View style={styles.inputs}>
-            <View style={styles.inputContainer}>
-              <Image style={styles.inputUsername} source={require('../../images/username.png')} />
-              <TextInput
-                  onChangeText={(username) => this.setState({username})}
-                  autoCapitalize="none"
-                  autoFocus={true}
-                  style={[styles.input, styles.whiteFont]}
-                  placeholder="用户名"
-                  placeholderTextColor="#FFF"
-                  value={this.state.username}
-              />
+
+          <View style={styles.content}>
+            <View style={styles.inputs}>
+              <View style={styles.inputContainer}>
+                <Image style={styles.inputUsername} source={require('../../images/username.png')} />
+                <TextInput
+                    onChangeText={(username) => this.setState({username})}
+                    autoCapitalize="none"
+
+                    style={[styles.input, styles.whiteFont]}
+                    placeholder="用户名"
+                    placeholderTextColor="#FFF"
+                    value={this.state.username}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Image style={styles.inputPassword} source={require('../../images/password.png')} />
+                <TextInput
+                    onChangeText={(password) => this.setState({password})}
+                    autoCapitalize="none"
+                    password={true}
+                    style={[styles.input, styles.whiteFont]}
+                    placeholder="密码"
+                    placeholderTextColor="#FFF"
+                    value={this.state.password}
+                />
+              </View>
+              <View style={styles.forgotContainer}>
+                <Text style={styles.greyFont}>忘记密码</Text>
+              </View>
             </View>
-            <View style={styles.inputContainer}>
-              <Image style={styles.inputPassword} source={require('../../images/password.png')} />
-              <TextInput
-                  onChangeText={(password) => this.setState({password})}
-                  autoCapitalize="none"
-                  password={true}
-                  style={[styles.input, styles.whiteFont]}
-                  placeholder="密码"
-                  placeholderTextColor="#FFF"
-                  value={this.state.password}
-              />
+
+            <View style={styles.spinner}>
+              {spinner}
             </View>
-            <View style={styles.forgotContainer}>
-              <Text style={styles.greyFont}>忘记密码</Text>
-            </View>
-          </View>
-          <View style={styles.spinner}>
-            {spinner}
-          </View>
-          <TouchableHighlight
-              underlayColor="white"
-              onPress={this.signin.bind(this)}
-          >
-            <View style={styles.signin}>
-              <Text style={styles.whiteFont}>登录</Text>
-            </View>
-          </TouchableHighlight>
-          <View style={styles.signup}>
-            <Text style={styles.greyFont}>没有账户?</Text>
+
             <TouchableHighlight
-                underlayColor="grey"
-                onPress={() => {this.props.navigator.push({name:'signup'});}}
+                underlayColor="white"
+                onPress={this.signin.bind(this)}
             >
-            <Text style={styles.whiteFont}> 注册</Text>
+              <View style={styles.signin}>
+                <Text style={styles.whiteFont}>登录</Text>
+              </View>
             </TouchableHighlight>
+
+            <View style={styles.signup}>
+
+              <View style={styles.wechat}>
+                <Text style={styles.greyFont}>微信登录   </Text>
+                <TouchableHighlight
+                    underlayColor="grey"
+                    onPress={() => {this.props.navigator.push({name:'signup'});}}
+                >
+                  {wechatIcon}
+                </TouchableHighlight>
+              </View>
+
+              <View style={styles.register}>
+                <Text style={styles.greyFont}>没有账户?</Text>
+                <TouchableHighlight
+                    underlayColor="grey"
+                    onPress={() => {this.props.navigator.push({name:'signup'});}}
+                >
+                <Text style={styles.whiteFont}> 注册</Text>
+                </TouchableHighlight>
+              </View>
+
+            </View>
           </View>
         </View>
     );
@@ -121,10 +171,6 @@ class SignIn extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: 'transparent'
-    },
     bg: {
       position: 'absolute',
       left: 0,
@@ -132,15 +178,67 @@ const styles = StyleSheet.create({
       width: windowSize.width,
       height: windowSize.height
     },
-    header: {
-      flex: .5,
+
+    /* * * * * * * * * * * * */
+    //container (header, content)
+    container: {
       backgroundColor: 'transparent'
     },
-    inputs: {
-      marginTop: 10,
-      marginBottom: 10,
-      flex: .25
+    /* * * * * * * * * * * * */
+
+    /* * * * * * * * * * * * */
+    header: {
+      backgroundColor: 'transparent'
     },
+    //content (inputs,spinner,signin,signup)
+    content: {
+      flex: .5
+    },
+    /* * * * * * * * * * * * */
+
+    /* * * * * * * * * * * * */
+    inputs: {
+      flex: .3,
+      marginTop: 20,
+      marginBottom: 10
+    },
+    spinner: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 36,
+      marginBottom: 10
+    },
+    signin: {
+      flex: .3,
+      backgroundColor: '#FF3366',
+      padding: 20,
+      alignItems: 'center'
+    },
+    //signup (wechat,register)
+    signup: {
+      flex: .2,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    /* * * * * * * * * * * * */
+
+    /* * * * * * * * * * * * */
+    wechat: {
+      flex: .5,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    register: {
+      flex: .5,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    /* * * * * * * * * * * * */
+
+    /* * * * * * * * * * * * */
     inputContainer: {
       padding: 10,
       borderWidth: 1,
@@ -165,17 +263,6 @@ const styles = StyleSheet.create({
       height: 20,
       fontSize: 14
     },
-    signin: {
-      backgroundColor: '#FF3366',
-      padding: 20,
-      alignItems: 'center'
-    },
-    signup: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flex: .15
-    },
     forgotContainer: {
       alignItems: 'flex-end',
       padding: 15,
@@ -185,13 +272,8 @@ const styles = StyleSheet.create({
     },
     whiteFont: {
       color: '#FFF'
-    },
-    spinner: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: 36,
-      marginBottom: 10
     }
+    /* * * * * * * * * * * * */
 })
 
 export default SignIn;
