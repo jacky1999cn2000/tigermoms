@@ -1,3 +1,5 @@
+'use strict';
+
 var rootUrl = require('../config/appConfig').server;
 
 module.exports = {

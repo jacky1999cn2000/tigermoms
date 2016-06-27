@@ -21,8 +21,11 @@ const errorIcon = (<Icon name="exclamation-circle" size={10} color="red" />);
 const checkIcon = (<Icon name="check-circle" size={10} color="green" />);
 
 import Backend from '../../utils/backend';
+import StyleConfig from '../../utils/styleConfig';
 
 const windowSize = Dimensions.get('window');
+const iphoneType = StyleConfig.getIphoneType(windowSize);
+const styleConfig = StyleConfig.getSignUpStyleConfig(iphoneType);
 
 class SignUp extends React.Component {
   constructor(){
@@ -65,7 +68,8 @@ class SignUp extends React.Component {
   }
 
   render(){
-    let headerFlex = this.state.visibleHeight == windowSize.height ? 0.5 : 0.1;
+    let headerFlex = this.state.visibleHeight == windowSize.height ? 0.5 : styleConfig.headerFlex;
+    let contentFlex = this.state.visibleHeight == windowSize.height ? 0.5 : styleConfig.contentFlex;
 
     let spinner = this.state.isLoading ? <ActivityIndicatorIOS size='large'/> : <View/>;
     let smallspinner = <ActivityIndicatorIOS size='small'/>
@@ -84,7 +88,7 @@ class SignUp extends React.Component {
           <View style={[styles.header,{flex: headerFlex}]}>
           </View>
 
-          <View style={styles.content}>
+          <View style={[styles.content,{flex: contentFlex}]}>
             <View style={styles.inputs}>
               <View style={styles.inputContainer}>
                 <Image style={styles.inputUsername} source={require('../../images/username.png')} />
@@ -252,31 +256,30 @@ const styles = StyleSheet.create({
     },
     //content (inputs,spinner,signin,signup)
     content: {
-      flex: .5
+      backgroundColor: 'transparent'
     },
     /* * * * * * * * * * * * */
 
     /* * * * * * * * * * * * */
     inputs: {
-      flex: .4,
+      flex: styleConfig.inputsFlex,
       marginTop: 20,
       marginBottom: 10
     },
     spinner: {
+      flex: styleConfig.spinnerFlex,
       alignItems: 'center',
-      justifyContent: 'center',
-      height: 36,
-      marginBottom: 10
+      justifyContent: 'center'
     },
     signin: {
-      flex: .3,
+      flex: styleConfig.signupFlex,
       backgroundColor: '#FF3366',
       padding: 20,
       alignItems: 'center'
     },
     //signup (wechat,register)
     signup: {
-      flex: .2,
+      flex: styleConfig.signupFlex,
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center'
@@ -294,24 +297,24 @@ const styles = StyleSheet.create({
     inputPassword: {
       marginLeft: 15,
       width: 20,
-      height: 21
+      height: 20,
     },
     inputUsername: {
       marginLeft: 15,
       width: 20,
-      height: 20
+      height: 20,
     },
     input: {
       flex: 1,
-      marginLeft: 15,
       height: 20,
+      marginLeft: 15,
       fontSize: 14
     },
     icon: {
       justifyContent: 'center',
       alignItems: 'center',
       width: 20,
-      height: 20
+      height: 20,
     },
     forgotContainer: {
       alignItems: 'flex-end',

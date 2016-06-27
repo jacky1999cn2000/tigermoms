@@ -20,8 +20,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const wechatIcon = (<Icon name="wechat" size={30} color="#FF3366" />);
 
 import Backend from '../../utils/backend';
+import StyleConfig from '../../utils/styleConfig';
 
 const windowSize = Dimensions.get('window');
+const iphoneType = StyleConfig.getIphoneType(windowSize);
+const styleConfig = StyleConfig.getSignInStyleConfig(iphoneType);
 
 class SignIn extends React.Component {
   constructor(){
@@ -64,7 +67,8 @@ class SignIn extends React.Component {
   }
 
   render(){
-    let headerFlex = this.state.visibleHeight == windowSize.height ? 0.5 : 0.1;
+    let headerFlex = this.state.visibleHeight == windowSize.height ? 0.5 : styleConfig.headerFlex;
+    let contentFlex = this.state.visibleHeight == windowSize.height ? 0.5 : styleConfig.contentFlex;
 
     let spinner = this.state.isLoading ? <ActivityIndicatorIOS size='large'/> : <View/>;
 
@@ -72,10 +76,10 @@ class SignIn extends React.Component {
         <View style={[styles.container, {height:this.state.visibleHeight}]}>
           <Image style={styles.bg} source={require('../../images/bg9.jpg')} />
 
-          <View style={[styles.header,{flex: headerFlex}]}>
+          <View style={[styles.header,{flex:headerFlex}]}>
           </View>
 
-          <View style={styles.content}>
+          <View style={[styles.content,{flex:contentFlex}]}>
             <View style={styles.inputs}>
               <View style={styles.inputContainer}>
                 <Image style={styles.inputUsername} source={require('../../images/username.png')} />
@@ -192,31 +196,30 @@ const styles = StyleSheet.create({
     },
     //content (inputs,spinner,signin,signup)
     content: {
-      flex: .5
+      backgroundColor: 'transparent'
     },
     /* * * * * * * * * * * * */
 
     /* * * * * * * * * * * * */
     inputs: {
-      flex: .3,
-      marginTop: 20,
-      marginBottom: 10
+      flex: styleConfig.inputsFlex,
+      paddingTop: 20,
+      paddingBottom: 10
     },
     spinner: {
+      flex: styleConfig.spinnerFlex,
       alignItems: 'center',
-      justifyContent: 'center',
-      height: 36,
-      marginBottom: 10
+      justifyContent: 'center'
     },
     signin: {
-      flex: .3,
+      flex: styleConfig.signinFlex,
       backgroundColor: '#FF3366',
       padding: 20,
       alignItems: 'center'
     },
     //signup (wechat,register)
     signup: {
-      flex: .2,
+      flex: styleConfig.signupFlex,
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center'
@@ -241,6 +244,7 @@ const styles = StyleSheet.create({
     /* * * * * * * * * * * * */
     inputContainer: {
       padding: 10,
+      flexDirection: 'row',
       borderWidth: 1,
       borderBottomColor: '#CCC',
       borderColor: 'transparent'
@@ -248,24 +252,22 @@ const styles = StyleSheet.create({
     inputPassword: {
       marginLeft: 15,
       width: 20,
-      height: 21
+      height: 20
     },
     inputUsername: {
       marginLeft: 15,
       width: 20,
-      height: 20
+      height: 20,
     },
     input: {
-      position: 'absolute',
-      left: 61,
-      top: 12,
-      right: 0,
+      flex: 1,
       height: 20,
+      marginLeft: 15,
       fontSize: 14
     },
     forgotContainer: {
       alignItems: 'flex-end',
-      padding: 15,
+      padding: 10,
     },
     greyFont: {
       color: '#D8D8D8'
