@@ -24,7 +24,7 @@ class Route extends React.Component {
     return (
       <Navigator
         style={styles.container}
-        initialRoute={{name: 'signin'}}
+        initialRoute={{name: 'initprofile'}}
         renderScene={this.renderScene}
         configureScene={() => { return Navigator.SceneConfigs.FloatFromRight; }}
       />

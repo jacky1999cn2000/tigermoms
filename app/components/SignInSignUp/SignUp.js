@@ -224,8 +224,13 @@ class SignUp extends React.Component {
         this.setState({isLoading: false});
         Alert.alert(resultJson.message);
       }else{
-        Alert.alert('注册成功,请登录');
-        this.props.navigator.pop();
+        // Alert.alert('注册成功,请登录');
+        // this.props.navigator.pop();
+        let cache = {
+          userInfo: {username:this.state.username}
+        };
+        AsyncStorage.setItem(require('../../config/appConfig').cache, JSON.stringify(cache));
+        this.props.navigator.resetTo({name:'initprofile'});
       }
     }else{
       Alert.alert('请输入合乎要求的用户名和密码');

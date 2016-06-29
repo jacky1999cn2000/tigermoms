@@ -86,7 +86,6 @@ class SignIn extends React.Component {
                 <TextInput
                     onChangeText={(username) => this.setState({username})}
                     autoCapitalize="none"
-
                     style={[styles.input, styles.whiteFont]}
                     placeholder="用户名"
                     placeholderTextColor="#FFF"
