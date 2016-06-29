@@ -10,6 +10,7 @@ import {
   Image,
   Switch,
   TouchableHighlight,
+  MapView,
   Dimensions,
   AsyncStorage
 } from 'react-native';
@@ -19,6 +20,11 @@ const wechatIcon = (<Icon name="wechat" size={30} color="#FF3366" />);
 const weiboIcon = (<Icon name="weibo" size={30} color="#FF3366" />);
 const facebookIcon = (<Icon name="facebook-square" size={30} color="#FF3366" />);
 
+import { SegmentedControls } from 'react-native-radio-buttons';
+const options = [
+  '使用邮编定位',
+  '使用手机定位'
+];
 
 const windowSize = Dimensions.get('window');
 
@@ -27,6 +33,12 @@ class InitProfile extends React.Component {
     super(...arguments);
     this.state = {
       step: 1,
+      locationOption: '使用邮编定位',
+      pin:{
+       latitude: 0,
+       longitude: 0
+      },
+      mapRegion: null,
       username: '',
       isContactInfoPrivate: false
     }
@@ -70,6 +82,26 @@ class InitProfile extends React.Component {
   render(){
 
     //let content = this.state.step == 1 ?
+    let locationView = this.state.locationOption == '使用邮编定位' ? (
+      <View style={styles.mapTextInputAndButtonContainer}>
+        <View style={styles.mapTextInputContainer}>
+          <TextInput
+            placeholder="请输入邮编 (例:94568)"
+            placeholderTextColor="gray"
+            style={[styles.textInputStyle]}
+          />
+        </View>
+        <TouchableHighlight
+          style={styles.mapButton}
+          underlayColor="grey"
+          onPress={()=>{console.log('pressed');}}
+        >
+          <Text style={styles.mapButtonText}>
+            定位
+          </Text>
+        </TouchableHighlight>
+      </View>
+    ) : <View/>;
 
     return (
         <View style={styles.container}>
@@ -132,12 +164,39 @@ class InitProfile extends React.Component {
               />
             </View>
 
-            <View style={styles.kidsInfoContainer}>
+            <View style={styles.locationInfoContainter}>
+              <SegmentedControls
+                tint= {'#FF3366'}
+                options={ options }
+                onSelection={this.onLocationOptionSelection.bind(this)}
+                selectedOption={this.state.locationOption}
+              />
+              {locationView}
+              <MapView
+                region={this.state.mapRegion}
+                annotations={[this.state.pin]}
+                style={styles.mapStyle}
+                onRegionChangeComplete={this.onRegionChangeComplete.bind(this)}
+              >
+              </MapView>
+              <View style={styles.mapTextContainer}>
+                <Text style={styles.smallText}>定位你居住的城市, 可以让别人更方便地找到你, 同时也让你更方便地找到别人</Text>
+              </View>
             </View>
           </ScrollView>
 
         </View>
     );
+  }
+
+  onLocationOptionSelection(locationOption){
+    this.setState({
+      locationOption
+    });
+  }
+
+  onRegionChangeComplete(){
+    console.log('onRegionChangeComplete');
   }
 
 
@@ -169,7 +228,6 @@ const styles = StyleSheet.create({
   basicInfoAndImageContainer: {
     flexDirection: 'row'
   },
-
   personalIntroContainer: {
     height: 30,
     marginTop: 15,
@@ -179,20 +237,26 @@ const styles = StyleSheet.create({
     borderBottomColor: '#CCC',
     borderColor: 'transparent'
   },
+  locationInfoContainter: {
+    marginTop: 10,
+    marginHorizontal: 10,
+    backgroundColor: 'white'
+  },
+
   contactInfoContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 5,
-    marginHorizontal: 10,
-    // borderColor: 'red',
-    // borderWidth: 1
+    marginHorizontal: 10
   },
   kidsInfoContainer: {
 
   },
 
-  // basicInfoAndImageContainer (imageContainer,basicInfoContainer)
+  /*
+    basicInfoAndImageContainer (imageContainer,basicInfoContainer)
+  */
   imageContainer: {
     flex: 0.3
   },
@@ -239,7 +303,9 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
 
-  // contactInfoContainer (contactInfoContent, contactInfoSwitchContainer)
+  /*
+    contactInfoContainer (contactInfoContent, contactInfoSwitchContainer)
+  */
   contactInfoContent: {
     flex: 0.7,
     flexDirection: 'row',
@@ -267,14 +333,49 @@ const styles = StyleSheet.create({
     borderColor: 'transparent'
   },
 
-  contactInfoSwitchContainer: {
-    flex: 0.3,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
+  // contactInfoSwitchContainer
   contactInfoHeaderText: {
     fontSize: 12,
     fontWeight: 'bold'
+  },
+
+  /*
+    locationInfoContainter (contactInfoContent, contactInfoSwitchContainer)
+  */
+  mapStyle: {
+    height: 80,
+    marginTop: 10
+  },
+  mapTextInputAndButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 5
+  },
+  mapTextInputContainer: {
+    flex: 0.7,
+    height: 20,
+    marginTop: 15,
+    marginBottom: 5,
+    marginHorizontal: 10,
+    borderWidth: 1,
+    borderBottomColor: '#CCC',
+    borderColor: 'transparent'
+  },
+  mapButton: {
+    flex: 0.3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 30,
+    paddingHorizontal: 5,
+    backgroundColor: '#FF3366',
+    borderRadius: 2
+  },
+  mapButtonText: {
+    color: 'white'
+  },
+  mapTextContainer: {
+    marginVertical:5
   }
 })
 
