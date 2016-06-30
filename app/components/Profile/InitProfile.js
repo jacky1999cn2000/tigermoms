@@ -13,7 +13,8 @@ import {
   MapView,
   Dimensions,
   AsyncStorage,
-  Alert
+  Alert,
+  ActivityIndicatorIOS
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -39,8 +40,9 @@ class InitProfile extends React.Component {
   constructor(){
     super(...arguments);
     this.state = {
-      step: 1,
+      step: 2,
 
+      //地图相关
       locationOption: '使用邮编定位',
       zipCode: '',
       city: '',
@@ -48,10 +50,22 @@ class InitProfile extends React.Component {
       address: '',
       longitude: null,
       latitude: null,
+      isLoading: false,
+      contentOffset: {x:0,y:0}, //输入邮编时酌情调节ScrollView的offset
 
-      contentOffset: {x:0,y:0},
+      //基本信息
       username: '',
-      isContactInfoPrivate: false
+      nickname: '',
+      role: '',
+      introduction: '',
+
+      //联系方式
+      wechat: '',
+      weibo: '',
+      facebook: '',
+      isWechatPrivate: false,
+      isWeiboPrivate: false,
+      isFacebookPrivate: false
     }
   }
 
@@ -59,41 +73,12 @@ class InitProfile extends React.Component {
 
     let cache = await AsyncStorage.getItem(require('../../config/appConfig').cache);
     //let cache = await AsyncStorage.getItem('somethingelse');
-    console.log('cache ',cache);
     let cacheObj = JSON.parse(cache);
-    console.log('cacheObj ',cacheObj);
     this.setState({username: cacheObj.userInfo.username});
   }
 
-
-              // <View style={styles.contactInfoContainer}>
-              //   <View style={styles.contactInfoContent}>
-              //     <View style={styles.contactInfoContentIcon}>
-              //       {wechatIcon}
-              //     </View>
-              //     <View style={styles.contactInfoContentTextInputContainer}>
-              //       <TextInput
-              //         placeholder="微信"
-              //         placeholderTextColor="gray"
-              //         style={styles.textInputStyle}
-              //       />
-              //     </View>
-              //   </View>
-              //
-              //   <View style={styles.contactInfoSwitchContainer}>
-              //     <Switch
-              //       onValueChange={(value) => this.setState({isContactInfoPrivate: value})}
-              //       value={this.state.isContactInfoPrivate} />
-              //       <Text style={styles.imageCaptionText}>
-              //          仅好友可见
-              //       </Text>
-              //   </View>
-              // </View>
-
   render(){
-    console.log('city ',this.state.city);
-    console.log('county ',this.state.county);
-    console.log('address ',this.state.address);
+    let spinner = this.state.isLoading ? <ActivityIndicatorIOS size='large'/> : <View/>;
     /*
       如果state里的longitude和latitude被更新,则重新计算 pin 和 mapRegion
     */
@@ -120,17 +105,15 @@ class InitProfile extends React.Component {
     */
     // (step1) controlButton 根据 this.state.step == 1 or 2 来决定显示哪个
     let controlButton = this.state.step == 1 ? (
-      <View style={styles.controlButtonContainer}>
-        <TouchableHighlight
-          style={styles.controlButton}
-          underlayColor="grey"
-          onPress={this.getLocationByZipCode.bind(this)}
-        >
-          <Text style={styles.mapButtonText}>
-            下一步
-          </Text>
-        </TouchableHighlight>
-      </View>
+      <TouchableHighlight
+        style={styles.controlButton}
+        underlayColor="grey"
+        onPress={this.nextStep.bind(this)}
+      >
+        <Text style={styles.controlButtonText}>
+          下一步
+        </Text>
+      </TouchableHighlight>
     ) : null;
 
     // (step1) locationView 包括邮编 TextInput 和 TouchableHighlight, 当选择 "使用邮编定位" 时显示
@@ -211,7 +194,7 @@ class InitProfile extends React.Component {
             </View>
             <View style={styles.basicInfo}>
               <TextInput
-                placeholder="请输入昵称 (required)"
+                placeholder="请输入昵称 (必填)"
                 placeholderTextColor="gray"
                 style={styles.textInputStyle}
               />
@@ -222,7 +205,7 @@ class InitProfile extends React.Component {
                 onPress={()=>{console.log('pressed');}}
               >
                 <Text style={[styles.textStyle,{color:'gray'}]}>
-                  请选择身份 (required)
+                  请选择身份 (必填)
                 </Text>
               </TouchableHighlight>
             </View>
@@ -232,7 +215,7 @@ class InitProfile extends React.Component {
 
         <View style={styles.personalIntroContainer}>
           <TextInput
-            placeholder="用一段话介绍一下你自己 (optional)"
+            placeholder="用一段话介绍一下你自己 (选填)"
             placeholderTextColor="gray"
             multiline={true}
             style={[styles.textInputStyle]}
@@ -247,12 +230,14 @@ class InitProfile extends React.Component {
             selectedOption={this.state.locationOption}
           />
           {locationView}
+          <View style={styles.spinner}>
+            {spinner}
+          </View>
           {addressView}
           <MapView
             region={mapRegion}
             annotations={[pin]}
             style={styles.mapStyle}
-            onRegionChangeComplete={this.onRegionChangeComplete.bind(this)}
           >
           </MapView>
           <View style={styles.mapTextContainer}>
@@ -261,7 +246,99 @@ class InitProfile extends React.Component {
         </View>
         {controlButton}
       </ScrollView>
-    ) : null;
+    ) : (
+      <ScrollView
+        style={styles.content}
+        contentOffset={this.state.contentOffset}
+      >
+        <View style={styles.contactInfoContainer}>
+          <View style={styles.contactInfoContent}>
+            <View style={styles.contactInfoContentIcon}>
+              {wechatIcon}
+            </View>
+            <View style={styles.contactInfoContentTextInputContainer}>
+              <TextInput
+                onChangeText={(wechat) => this.setState({wechat})}
+                autoCapitalize="none"
+                placeholder="微信(选填)"
+                placeholderTextColor="gray"
+                style={styles.textInputStyle}
+                value={this.state.wechat}
+              />
+            </View>
+          </View>
+
+          <View style={styles.contactInfoSwitchContainer}>
+            <Switch
+              onValueChange={(value) => this.setState({isWechatPrivate: value})}
+              value={this.state.isWechatPrivate} />
+            <Text style={styles.smallText}>
+               仅好友可见
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.contactInfoContainer}>
+          <View style={styles.contactInfoContent}>
+            <View style={styles.contactInfoContentIcon}>
+              {weiboIcon}
+            </View>
+            <View style={styles.contactInfoContentTextInputContainer}>
+              <TextInput
+                onChangeText={(weibo) => this.setState({weibo})}
+                autoCapitalize="none"
+                placeholder="微博(选填)"
+                placeholderTextColor="gray"
+                style={styles.textInputStyle}
+                value={this.state.weibo}
+              />
+            </View>
+          </View>
+
+          <View style={styles.contactInfoSwitchContainer}>
+            <Switch
+              onValueChange={(value) => this.setState({isWeiboPrivate: value})}
+              value={this.state.isWeiboPrivate} />
+            <Text style={styles.smallText}>
+               仅好友可见
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.contactInfoContainer}>
+          <View style={styles.contactInfoContent}>
+            <View style={styles.contactInfoContentIcon}>
+              {facebookIcon}
+            </View>
+            <View style={styles.contactInfoContentTextInputContainer}>
+              <TextInput
+                onChangeText={(facebook) => this.setState({facebook})}
+                autoCapitalize="none"
+                placeholder="Facebook(选填)"
+                placeholderTextColor="gray"
+                style={styles.textInputStyle}
+                value={this.state.facebook}
+              />
+            </View>
+          </View>
+
+          <View style={styles.contactInfoSwitchContainer}>
+            <Switch
+              onValueChange={(value) => this.setState({isFacebookPrivate: value})}
+              value={this.state.isFacebookPrivate} />
+            <Text style={styles.smallText}>
+               仅好友可见
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.contactTextContainer}>
+          <Text style={styles.smallText}>
+            * 若设置为仅好友可见,则对方必须是你的好友才可以看到对应的联系方式
+          </Text>
+        </View>
+      </ScrollView>
+    );
 
     return (
         <View style={styles.container}>
@@ -299,8 +376,14 @@ class InitProfile extends React.Component {
     };
   }
 
+  /*
+    当用户选择不同的定位方式时被调用
+    当选择"使用手机定位"时,获取当前位置并调用google geocoding得到城市信息
+    当选择"使用邮编定位"时,只设置选项,获取城市信息在用户点击"定位"按钮之后
+  */
   async onLocationOptionSelection(locationOption){
     if(locationOption == '使用手机定位'){
+      this.setState({isLoading: true});
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           let result = await Geocoding.getLocationByLatLng(position.coords.latitude,position.coords.longitude);
@@ -308,6 +391,7 @@ class InitProfile extends React.Component {
 
           let parsedJson = this.parseGeocodingJson(resultJson);
           this.setState({
+            isLoading: false,
             address: parsedJson.address,
             city: parsedJson.city,
             county: parsedJson.county,
@@ -316,7 +400,7 @@ class InitProfile extends React.Component {
             locationOption
           });
         },
-        (error) => {console.log('error here');},
+        (error) => {this.setState({locationOption}); Alert.alert('无法获取当前位置,请稍后再试或常使用邮编进行定位');},
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
       );
     }else{
@@ -326,14 +410,19 @@ class InitProfile extends React.Component {
     }
   }
 
+  /*
+    在"使用邮编定位"选项下,输入邮编点击"定位"按钮,获取城市信息
+  */
   async getLocationByZipCode(){
     if(Miscellaneous.validateZipCode(this.state.zipCode)){
+      this.setState({isLoading: true});
       let result = await Geocoding.getLocationByZipCode(this.state.zipCode.trim());
       let resultJson = await result.json();
       let parsedJson = this.parseGeocodingJson(resultJson);
 
       if(resultJson.status == 'OK'){
         this.setState({
+          isLoading: false,
           address: parsedJson.address,
           city: parsedJson.city,
           county: parsedJson.county,
@@ -341,17 +430,18 @@ class InitProfile extends React.Component {
           longitude: resultJson.results[0].geometry.location.lng
         });
       }else{
-        Alert.alert('请确认输入正确的邮编后再试');
+        Alert.alert('服务器繁忙,请稍后再试');
       }
     }else{
       Alert.alert('请输入正确的邮编');
     }
   }
 
-  onRegionChangeComplete(){
-    console.log('onRegionChangeComplete');
+  nextStep(){
+    //validation
+    //TODO:
+    this.setState({step:2});
   }
-
 
 }
 
@@ -377,50 +467,33 @@ const styles = StyleSheet.create({
     flex: 0.9
   },
 
-  // content (basicInfoAndImageContainer,personalIntro)
-  basicInfoAndImageContainer: {
-    flexDirection: 'row'
-  },
-  personalIntroContainer: {
-    height: 30,
-    marginTop: 15,
-    marginBottom: 5,
-    marginHorizontal: 10,
-    borderWidth: 1,
-    borderBottomColor: '#CCC',
-    borderColor: 'transparent'
-  },
-  locationInfoContainter: {
-    marginTop: 10,
-    marginHorizontal: 10,
-    backgroundColor: 'white'
-  },
+  // content basicInfoAndImageContainer,personalIntroContainer)
+  /*
+    content
+      - step1
+        - basicInfoAndImageContainer
+        - personalIntroContainer
+        - locationInfoContainter
+      - step2
 
-  contactInfoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 5,
-    marginHorizontal: 10
-  },
+  */
+
   kidsInfoContainer: {
 
   },
 
-  controlButtonContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 40,
-    marginHorizontal: 20,
-    backgroundColor: '#FF3366',
-    borderRadius: 2,
-    borderColor: 'red',
-    borderWidth: 1
-  },
 
   /*
-    basicInfoAndImageContainer (imageContainer,basicInfoContainer)
+    basicInfoAndImageContainer
+      - imageContainer
+        - image
+        - imageCaption
+      - basicInfoContainer
+        - basicInfo
   */
+  basicInfoAndImageContainer: {
+    flexDirection: 'row'
+  },
   imageContainer: {
     flex: 0.3
   },
@@ -468,44 +541,31 @@ const styles = StyleSheet.create({
   },
 
   /*
-    contactInfoContainer (contactInfoContent, contactInfoSwitchContainer)
+    personalIntroContainer
   */
-  contactInfoContent: {
-    flex: 0.7,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center'
-  },
-  contactInfoSwitchContainer: {
-    flex: 0.3,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-
-  // contactInfoContent (contactInfoContentIcon, contactInfoContentTextInput)
-  contactInfoContentIcon: {
-    marginLeft: 5,
-    marginRight: 5
-  },
-  contactInfoContentTextInputContainer: {
-    flex: 1,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+  personalIntroContainer: {
+    height: 30,
+    marginTop: 15,
+    marginBottom: 5,
+    marginHorizontal: 10,
     borderWidth: 1,
     borderBottomColor: '#CCC',
     borderColor: 'transparent'
   },
 
-  // contactInfoSwitchContainer
-  contactInfoHeaderText: {
-    fontSize: 12,
-    fontWeight: 'bold'
-  },
-
   /*
-    locationInfoContainter (mapStyle, mapTextInputAndButtonContainer, addressTextContainer)
+    locationInfoContainter
+      - mapStyle
+      - mapTextInputAndButtonContainer
+        - mapTextInputContainer
+        - mapButton
+      - addressTextContainer
   */
+  locationInfoContainter: {
+    marginTop: 10,
+    marginHorizontal: 10,
+    backgroundColor: 'white'
+  },
   mapStyle: {
     height: 80,
     marginTop: 10
@@ -552,15 +612,80 @@ const styles = StyleSheet.create({
   },
 
   /*
-    controlButtonContainer
+    contactInfoContainer
+      - contactInfoContent
+        - contactInfoContentIcon
+        - contactInfoContentTextInput
+      - contactInfoSwitchContainer
+  */
+  contactInfoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    marginLeft: 15,
+    marginRight: 10
+  },
+  contactInfoContent: {
+    flex: 0.7,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  },
+  contactInfoSwitchContainer: {
+    flex: 0.3,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  // contactInfoContent (contactInfoContentIcon, contactInfoContentTextInput)
+  contactInfoContentIcon: {
+    marginLeft: 5,
+    marginRight: 5
+  },
+  contactInfoContentTextInputContainer: {
+    flex: 1,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    borderWidth: 1,
+    borderBottomColor: '#CCC',
+    borderColor: 'transparent'
+  },
+  contactTextContainer: {
+    marginTop: 10,
+    marginLeft: 15,
+    marginRight: 10
+  },
+  contactSmallText: {
+    marginTop: 2,
+    fontSize: 10,
+    color: 'grey'
+  },
+
+  /*
+    controlButton
   */
   controlButton: {
     justifyContent: 'center',
     alignItems: 'center',
     height: 40,
-    paddingHorizontal: 5,
+    marginVertical: 40,
+    marginHorizontal: 20,
+    backgroundColor: '#FF3366',
+    borderRadius: 2
+  },
+  controlButtonText: {
+    color: 'white'
+  },
 
-  }
+  /*
+    spinner
+  */
+  spinner: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 })
 
 export default InitProfile;
