@@ -327,7 +327,7 @@ class InitProfile extends React.Component {
   }
 
   async getLocationByZipCode(){
-    if(Miscellaneous.validateZipCode(this.state.zipCode.trim())){
+    if(Miscellaneous.validateZipCode(this.state.zipCode)){
       let result = await Geocoding.getLocationByZipCode(this.state.zipCode.trim());
       let resultJson = await result.json();
       let parsedJson = this.parseGeocodingJson(resultJson);

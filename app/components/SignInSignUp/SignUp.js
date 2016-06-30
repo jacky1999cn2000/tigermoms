@@ -22,6 +22,7 @@ const checkIcon = (<Icon name="check-circle" size={10} color="green" />);
 
 import Backend from '../../utils/backend';
 import StyleConfig from '../../utils/styleConfig';
+import Miscellaneous from '../../utils/miscellaneous';
 
 const windowSize = Dimensions.get('window');
 const iphoneType = StyleConfig.getIphoneType(windowSize);
@@ -97,7 +98,7 @@ class SignUp extends React.Component {
                       this.setState({
                         username,
                         usernameChecked: false,
-                        usernameValid: this.validateEmail(username)
+                        usernameValid: Miscellaneous.validateEmail(username)
                       })
                     }}
                     onBlur={this.check.bind(this)}
@@ -186,11 +187,6 @@ class SignUp extends React.Component {
         </View>
     );
   }
-
-  validateEmail = (email) => {
-    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  };
 
   async check(){
     if(this.state.usernameValid){
