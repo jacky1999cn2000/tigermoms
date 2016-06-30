@@ -111,6 +111,28 @@ module.exports = {
           signupFlex: 0.2
         };
     }
+  },
+
+  getInitProfileStyleConfig: function(iphoneType){
+    switch (iphoneType) {
+      case 'iphone6plus':
+      case 'iphone6':
+        return {
+          contentOffset: {x:0,y:0}
+        };
+      case 'iphone5':
+        return {
+          contentOffset: {x:0,y:20}
+        };
+      case 'iphone4':
+        return {
+          contentOffset: {x:0,y:100}
+        };
+      default:
+        return {
+          contentOffset: {x:0,y:0}
+        };
+    }
   }
 
 }

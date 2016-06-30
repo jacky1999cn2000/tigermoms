@@ -197,7 +197,7 @@ class SignUp extends React.Component {
       this.setState({isChecking: true});
       let result = await Backend.check(this.state.username.trim());
       let resultJson = await result.json();
-      console.log('resultJson.length',resultJson.length);
+
       if(resultJson.length == 0){
         this.setState({
           isChecking: false,
