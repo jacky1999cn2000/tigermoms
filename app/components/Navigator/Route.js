@@ -24,7 +24,7 @@ class Route extends React.Component {
     return (
       <Navigator
         style={styles.container}
-        initialRoute={{name: 'initprofile'}}
+        initialRoute={{name: 'editprofile'}}
         renderScene={this.renderScene}
         configureScene={() => { return Navigator.SceneConfigs.FloatFromRight; }}
       />

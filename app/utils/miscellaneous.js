@@ -12,4 +12,12 @@ module.exports = {
     return re.test(zipCode);
   },
 
+  safelyRenderValue(value){
+    if(typeof value == 'undefined'){
+      return '';
+    }else{
+      return value;
+    }
+  }
+
 }

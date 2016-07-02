@@ -17,7 +17,7 @@ module.exports = {
       });
       return response;
     }catch(ex){
-      console.error(error);
+      console.error(ex);
     }
   },
 
@@ -38,7 +38,7 @@ module.exports = {
       });
       return response;
     }catch(ex){
-      console.error(error);
+      console.error(ex);
     }
   },
 
@@ -59,7 +59,7 @@ module.exports = {
       });
       return response;
     }catch(ex){
-      console.error(error);
+      console.error(ex);
     }
   }
 

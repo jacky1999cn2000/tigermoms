@@ -226,7 +226,7 @@ class SignUp extends React.Component {
           userInfo: {username:this.state.username}
         };
         AsyncStorage.setItem(require('../../config/appConfig').cache, JSON.stringify(cache));
-        this.props.navigator.resetTo({name:'initprofile'});
+        this.props.navigator.resetTo({name:'editprofile',init:true});
       }
     }else{
       Alert.alert('请输入合乎要求的用户名和密码');
