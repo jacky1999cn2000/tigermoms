@@ -14,9 +14,9 @@ import { connect } from 'react-redux';
 import { getUserInfoFromServer, changeAttributeValues } from '../../actions/userInfo'
 
 /* subcomponents */
-import Header from './subcomponents/Header';
-import ContentOne from './subcomponents/ContentOne';
-import ContentTwo from './subcomponents/ContentTwo';
+import Header from './editprofilesubcomponents/Header';
+import ContentOne from './editprofilesubcomponents/ContentOne';
+import ContentTwo from './editprofilesubcomponents/ContentTwo';
 
 class EditProfile extends React.Component {
   constructor(){
