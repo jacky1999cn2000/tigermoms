@@ -24,9 +24,9 @@ export function getUserInfoFromServer(username){
   }
 }
 
-export const changeAttributeValues = (names,values) => {
+export const changeUserInfoAttributeValues = (names,values) => {
   return {
-    type: TYPES.CHANGE_ATTRIBUTEVALUES,
+    type: TYPES.CHANGE_USERINFO_ATTRIBUTEVALUES,
     names,
     values
   };

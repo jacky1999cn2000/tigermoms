@@ -11,7 +11,7 @@ import {
 import { connect } from 'react-redux';
 
 /* actions */
-import { getUserInfoFromServer, changeAttributeValues } from '../../actions/userInfo'
+import { getUserInfoFromServer, changeUserInfoAttributeValues } from '../../actions/userInfo'
 
 /* subcomponents */
 import Header from './editprofilesubcomponents/Header';
@@ -44,7 +44,7 @@ class EditProfile extends React.Component {
     if(false){
       this.props.dispatch(getUserInfoFromServer('jacky@gmail.com'));
     }else{
-      this.props.dispatch(changeAttributeValues(['username'],[cacheObj.userInfo.username]));
+      this.props.dispatch(changeUserInfoAttributeValues(['username'],[cacheObj.userInfo.username]));
     }
   }
 

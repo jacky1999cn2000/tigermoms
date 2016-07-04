@@ -11,6 +11,7 @@ import BasicInfo from './BasicInfo';
 import PersonalInfo from './PersonalInfo';
 import LocationInfo from './LocationInfo';
 import Button from './Button';
+import RoleModal from './RoleModal';
 
 class ContentOne extends React.Component {
 
@@ -24,6 +25,7 @@ class ContentOne extends React.Component {
         style={this.props.style}
         contentOffset={this.props.contentOffset}
       >
+        <RoleModal style={this.props.style} />
         <BasicInfo style={styles.basicInfoStyle} />
         <PersonalInfo style={styles.personalInfoStyle} />
         <LocationInfo style={styles.locationInfoStyle} />

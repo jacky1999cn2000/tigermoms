@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import Miscellaneous from '../../../utils/miscellaneous';
 
 /* actions */
-import { changeAttributeValue } from '../../../actions/userInfo';
+import { changeUserInfoAttributeValues } from '../../../actions/userInfo';
 
 class PersonalInfo extends React.Component {
 
@@ -30,7 +30,7 @@ class PersonalInfo extends React.Component {
           placeholderTextColor="gray"
           multiline={true}
           style={[styles.textInputStyle]}
-          onChangeText={(value) => {this.props.dispatch(changeAttributeValue('introduction',value))}}
+          onChangeText={(value) => {this.props.dispatch(changeUserInfoAttributeValues('introduction',value))}}
           autoCapitalize="none"
           value={Miscellaneous.safelyRenderValue(this.props.userInfo.get('introduction'))}
         />

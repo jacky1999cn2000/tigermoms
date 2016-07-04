@@ -17,7 +17,7 @@ import {
 import { connect } from 'react-redux';
 
 /* actions */
-import { changeAttributeValues } from '../../../actions/userInfo';
+import { changeUserInfoAttributeValues } from '../../../actions/userInfo';
 
 /* geocoding functions */
 import Geocoding from '../../../utils/geocoding';
@@ -157,7 +157,7 @@ class LocationInfo extends React.Component {
             isLoading: false,
             locationOption
           });
-          this.props.dispatch(changeAttributeValues(
+          this.props.dispatch(changeUserInfoAttributeValues(
             ['address','city','county','latitude','longitude'],
             [parsedJson.address,parsedJson.city,parsedJson.county,resultJson.results[0].geometry.location.lat,resultJson.results[0].geometry.location.lng]
           ));
@@ -186,7 +186,7 @@ class LocationInfo extends React.Component {
         this.setState({
           isLoading: false,
         });
-        this.props.dispatch(changeAttributeValues(
+        this.props.dispatch(changeUserInfoAttributeValues(
           ['address','city','county','latitude','longitude'],
           [parsedJson.address,parsedJson.city,parsedJson.county,resultJson.results[0].geometry.location.lat,resultJson.results[0].geometry.location.lng]
         ));

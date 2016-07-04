@@ -2,11 +2,9 @@
 
 import {fromJS, Map} from 'immutable';
 
-const userInfo = (state = Map(), action) => {
+const appState = (state = Map({genderModalVisible:false}), action) => {
   switch (action.type) {
-    case 'GET_USERINFO':
-      return fromJS(action.userinfo);
-    case 'CHANGE_USERINFO_ATTRIBUTEVALUES':
+    case 'CHANGE_APPSTATE_ATTRIBUTEVALUES':
       for(let i=0; i<action.names.length; i++){
         /*
           don't forget to reassign the return value to state since it's immutable!
@@ -20,4 +18,4 @@ const userInfo = (state = Map(), action) => {
   }
 }
 
-export default userInfo;
+export default appState;

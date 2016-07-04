@@ -17,7 +17,8 @@ import { connect } from 'react-redux';
 import Miscellaneous from '../../../utils/miscellaneous';
 
 /* actions */
-import { changeAttributeValues } from '../../../actions/userInfo';
+import { changeUserInfoAttributeValues } from '../../../actions/userInfo';
+import { changeAppStateAttributeValues } from '../../../actions/appState';
 
 class BasicInfo extends React.Component {
 
@@ -54,7 +55,7 @@ class BasicInfo extends React.Component {
               placeholder="请输入昵称 (必填)"
               placeholderTextColor="gray"
               style={styles.textInputStyle}
-              onChangeText={(value) => {this.props.dispatch(changeAttributeValues(['nickname'],[value]))}}
+              onChangeText={(value) => {this.props.dispatch(changeUserInfoAttributeValues(['nickname'],[value]))}}
               autoCapitalize="none"
               value={Miscellaneous.safelyRenderValue(this.props.userInfo.get('nickname'))}
             />
@@ -62,10 +63,10 @@ class BasicInfo extends React.Component {
           <View style={styles.basicInfo}>
             <TouchableHighlight
               underlayColor="white"
-              onPress={()=>{console.log('pressed');}}
+              onPress={() => {this.props.dispatch(changeAppStateAttributeValues(['genderModalVisible'],[!this.props.appState.get('genderModalVisible')]))}}
             >
               <Text style={[styles.textStyle,{color:'gray'}]}>
-                请选择身份 (必填)
+                请选择性别 (必填)
               </Text>
             </TouchableHighlight>
           </View>
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
 
 BasicInfo = connect(
   state => {
-    return { userInfo:state.userInfo };
+    return { userInfo:state.userInfo, appState:state.appState };
  },
  dispatch => {
     return { dispatch }
