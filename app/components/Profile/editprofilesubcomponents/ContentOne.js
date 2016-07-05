@@ -13,6 +13,9 @@ import LocationInfo from './LocationInfo';
 import Button from './Button';
 import RoleModal from './RoleModal';
 
+/* redux connect */
+import { connect } from 'react-redux';
+
 class ContentOne extends React.Component {
 
   constructor(){
@@ -23,7 +26,7 @@ class ContentOne extends React.Component {
     return (
       <ScrollView
         style={this.props.style}
-        contentOffset={this.props.contentOffset}
+        contentOffset={this.props.appState.get('contentOffset')}
       >
         <RoleModal style={this.props.style} />
         <BasicInfo style={styles.basicInfoStyle} />
@@ -63,5 +66,14 @@ const styles = StyleSheet.create({
     borderRadius: 2
   }
 });
+
+ContentOne = connect(
+  state => {
+    return { userInfo:state.userInfo, appState:state.appState };
+ },
+ dispatch => {
+    return { dispatch }
+ }
+)(ContentOne)
 
 export default ContentOne;

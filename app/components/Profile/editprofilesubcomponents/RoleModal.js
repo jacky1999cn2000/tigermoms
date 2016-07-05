@@ -27,7 +27,6 @@ class RoleModal extends React.Component {
   }
 
   render(){
-    console.log('modal: this.props.appState.genderModalVisible: ',this.props.appState.get('genderModalVisible'));
     return (
       <Modal
         animationType='slide'

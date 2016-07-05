@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 
 /* actions */
 import { changeUserInfoAttributeValues } from '../../../actions/userInfo';
+import { changeAppStateAttributeValues } from '../../../actions/appState';
 
 /* geocoding functions */
 import Geocoding from '../../../utils/geocoding';
@@ -45,7 +46,6 @@ class LocationInfo extends React.Component {
     this.state = {
       //控制信息
       isLoading: false,
-      contentOffset: {x:0,y:0},
 
       //地图信息
       locationOption: '使用邮编定位',
@@ -83,8 +83,8 @@ class LocationInfo extends React.Component {
         <View style={styles.locationViewTextInputContainer}>
           <TextInput
             onChangeText={(zipCode) => this.setState({zipCode})}
-            onFocus={() => this.setState({contentOffset:styleConfig.contentOffset})}
-            onBlur={() => this.setState({contentOffset:{x:0,y:0}})}
+            onFocus={() => {this.props.dispatch(changeAppStateAttributeValues(['contentOffset'],[styleConfig.contentOffset]))}}
+            onBlur={() => {this.props.dispatch(changeAppStateAttributeValues(['contentOffset'],[{x:0,y:0}]))}}
             autoCapitalize="none"
             placeholder="请输入邮编 (例:94568)"
             placeholderTextColor="gray"
