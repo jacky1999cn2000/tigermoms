@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
 
 ContentOne = connect(
   state => {
+    console.log('ContentOne redux state',state);
     return { userInfo:state.userInfo, appState:state.appState };
  },
  dispatch => {

@@ -23,7 +23,7 @@ class EditProfile extends React.Component {
     super(...arguments);
     this.state = {
       //控制信息
-      step: 1,
+      step: 2,
 
     }
   }

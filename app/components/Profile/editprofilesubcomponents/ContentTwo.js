@@ -6,6 +6,13 @@ import {
   ScrollView
 } from 'react-native';
 
+/* redux connect */
+import { connect } from 'react-redux';
+
+/* components */
+import ContactInfo from './ContactInfo';
+import KidsInfo from './KidsInfo';
+
 class ContentTwo extends React.Component {
 
   constructor(){
@@ -18,13 +25,21 @@ class ContentTwo extends React.Component {
         style={this.props.style}
         contentOffset={this.props.contentOffset}
       >
+        <ContactInfo />
+        <KidsInfo />
       </ScrollView>
     );
   }
 }
 
-const styles = StyleSheet.create({
-
-});
+ContentTwo = connect(
+  state => {
+    console.log('ContentTwos redux state',state);
+    return { userInfo:state.userInfo, appState:state.appState };
+ },
+ dispatch => {
+    return { dispatch }
+ }
+)(ContentTwo)
 
 export default ContentTwo;

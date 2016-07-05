@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
 
 Button = connect(
   state => {
-    console.log('redux state',state);
     return { userInfo:state.userInfo };
  },
  dispatch => {

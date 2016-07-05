@@ -12,6 +12,8 @@ const userInfo = (state = Map(), action) => {
           don't forget to reassign the return value to state since it's immutable!
           otherwise the new state will be lost, and we just returned the old state back
         */
+        console.log('name ',action.names[i]);
+        console.log('value ',action.values[i]);
         state = state.set(action.names[i], action.values[i]);
       }
       return state;
