@@ -20,7 +20,7 @@ import Miscellaneous from '../../../utils/miscellaneous';
 import { changeUserInfoAttributeValues } from '../../../actions/userInfo';
 import { changeAppStateAttributeValues } from '../../../actions/appState';
 
-class RoleModal extends React.Component {
+class KidGenderModal extends React.Component {
 
   constructor(){
     super(...arguments);
@@ -31,20 +31,20 @@ class RoleModal extends React.Component {
       <Modal
         animationType='slide'
         transparent={true}
-        visible={this.props.appState.get('genderModalVisible')}
-        onRequestClose={() => {this.props.dispatch(changeAppStateAttributeValues(['genderModalVisible'],[!this.props.appState.get('genderModalVisible')]))}}
+        visible={this.props.appState.get('kidGenderModalVisible')}
+        onRequestClose={() => {this.props.dispatch(changeAppStateAttributeValues(['kidGenderModalVisible'],[!this.props.appState.get('kidGenderModalVisible')]))}}
       >
         <View style={[this.props.style, styles.container]}>
           <View style={styles.modalContainer}>
             <Picker
-              selectedValue={Miscellaneous.safelyRenderValue(this.props.userInfo.get('gender'))}
-              onValueChange={(value) => {this.props.dispatch(changeUserInfoAttributeValues(['gender'],[value]))}}>
-              <Picker.Item label="男士" value="男士" />
-              <Picker.Item label="女士" value="女士" />
+              selectedValue={"男孩"}
+              onValueChange={(value) => {}}>
+              <Picker.Item label="男孩" value="男孩" />
+              <Picker.Item label="女孩" value="女孩" />
             </Picker>
 
             <TouchableHighlight
-              onPress={() => {this.props.dispatch(changeAppStateAttributeValues(['genderModalVisible'],[!this.props.appState.get('genderModalVisible')]))}}
+              onPress={() => {this.props.dispatch(changeAppStateAttributeValues(['kidGenderModalVisible'],[!this.props.appState.get('kidGenderModalVisible')]))}}
               underlayColor="grey"
               style={styles.confirmButton}
               >
@@ -60,7 +60,8 @@ class RoleModal extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingTop: 40,
+    paddingHorizontal: 20,
     justifyContent: 'center',
     backgroundColor:'rgba(0, 0, 0, 0.4)'
   },
@@ -82,15 +83,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF3366',
     borderRadius: 2
   }
+
 });
 
-RoleModal = connect(
+KidGenderModal = connect(
   state => {
     return { userInfo:state.userInfo, appState:state.appState };
  },
  dispatch => {
     return { dispatch }
  }
-)(RoleModal)
+)(KidGenderModal)
 
-export default RoleModal;
+export default KidGenderModal;

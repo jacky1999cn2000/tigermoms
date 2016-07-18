@@ -12,6 +12,8 @@ import { connect } from 'react-redux';
 /* components */
 import ContactInfo from './ContactInfo';
 import KidsInfo from './KidsInfo';
+import KidAgeModal from './KidAgeModal';
+import KidGenderModal from './KidGenderModal';
 
 class ContentTwo extends React.Component {
 
@@ -25,6 +27,8 @@ class ContentTwo extends React.Component {
         style={this.props.style}
         contentOffset={this.props.contentOffset}
       >
+        <KidAgeModal style={this.props.style} />
+        <KidGenderModal style={this.props.style} />
         <ContactInfo />
         <KidsInfo />
       </ScrollView>

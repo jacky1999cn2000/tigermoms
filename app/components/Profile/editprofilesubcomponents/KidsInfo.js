@@ -9,17 +9,21 @@ import {
   TouchableHighlight
 } from 'react-native';
 
+/* components */
+import KidDetail from './KidDetail';
+
 /* redux connect */
 import { connect } from 'react-redux';
-//
-// /* utils */
-// import Miscellaneous from '../../../utils/miscellaneous';
-//
-// /* actions */
-// import { changeAttributeValues } from '../../../actions/userInfo';
+
+/* utils */
+import Miscellaneous from '../../../utils/miscellaneous';
+
+/* actions */
+import { changeUserInfoAttributeValues } from '../../../actions/userInfo';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 const kidsIcon = (<Icon name="child" size={30} color="#FF3366" />);
+const plusIcon = (<Icon name="plus-circle" size={50} color="#FF3366" />);
 
 class KidsInfo extends React.Component {
 
@@ -28,26 +32,52 @@ class KidsInfo extends React.Component {
   }
 
   render(){
+
+    let kidsList = [];
+    this.props.userInfo.get('kidsList').toArray().forEach((data, index) => {
+      console.log('data ',data);
+      console.log('index ',index);
+      let kidDetail = <KidDetail key={index} index={index} data={data} />
+      kidsList.push(kidDetail);
+    });
+
     return (
       <View>
-        <View style={styles.kidsInfoContainer}>
-          <View style={styles.kidsInfoContent}>
-            <View style={styles.kidsInfoContentIcon}>
+        <View style={styles.optionContainer}>
+          <View style={styles.contentContainer}>
+            <View style={styles.iconContainer}>
               {kidsIcon}
             </View>
-            <View style={styles.kidsInfoContentTextInputContainer}>
+            <View style={styles.textContainer}>
               <Text style={styles.textStyle}>
                 我是一个 爸爸 | 妈妈
               </Text>
             </View>
           </View>
-
-          <View style={styles.kidsInfoSwitchContainer}>
+          <View style={styles.switchContainer}>
             <Switch
               onValueChange={(value) => {this.props.dispatch(changeUserInfoAttributeValues(['hasKids'],[value]))}}
               value={this.props.userInfo.get('hasKids')} />
           </View>
         </View>
+
+        <View style={styles.kidsInfoContainer}>
+          <TouchableHighlight
+            style={styles.addButton}
+            underlayColor="transparent"
+            onPress={() => {}}
+          >
+            {plusIcon}
+          </TouchableHighlight>
+          <View style={styles.smallTextContainer}>
+            <Text style={styles.smallText}>* 点击+添加孩子信息,更便捷地找到合适的玩伴</Text>
+          </View>
+        </View>
+
+        <View style={styles.kidsList}>
+          {kidsList}
+        </View>
+
       </View>
     );
   }
@@ -55,7 +85,7 @@ class KidsInfo extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  kidsInfoContainer: {
+  optionContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -63,39 +93,66 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginRight: 10
   },
-  kidsInfoContent: {
+  contentContainer: {
     flex: 0.7,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center'
   },
-  kidsInfoSwitchContainer: {
+  switchContainer: {
     flex: 0.3,
     justifyContent: 'center',
     alignItems: 'center'
   },
-  kidsInfoContentIcon: {
+  iconContainer: {
     marginLeft: 5,
     marginRight: 5
   },
-  kidsInfoContentTextInputContainer: {
+  textContainer: {
     flex: 1,
     height: 40,
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    // borderWidth: 1,
-    // borderBottomColor: '#CCC',
-    // borderColor: 'transparent'
+    alignItems: 'flex-start'
   },
   textStyle: {
     fontSize: 14,
     color: 'grey'
   },
+  kidsInfoContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 5,
+    marginLeft: 15,
+    marginRight: 10
+  },
+  addButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 5,
+    backgroundColor: 'transparent',
+    borderRadius: 2
+  },
+  smallTextContainer:{
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop:5
+  },
+  smallText: {
+    fontSize: 10,
+    color: 'grey'
+  },
+  kidsList: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    marginLeft: 15,
+    marginRight: 10
+  }
 });
 
 KidsInfo = connect(
-  state => {
-    return { userInfo:state.userInfo };
+ state => {
+  return { userInfo:state.userInfo };
  },
  dispatch => {
     return { dispatch }

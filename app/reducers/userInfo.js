@@ -1,8 +1,8 @@
 'use strict';
 
-import {fromJS, Map} from 'immutable';
+import {fromJS, List, Map} from 'immutable';
 
-const userInfo = (state = Map(), action) => {
+const userInfo = (state = Map({kidsList:List([{year:2011,gender:'男孩',id:'111'}])}), action) => {
   switch (action.type) {
     case 'GET_USERINFO':
       return fromJS(action.userinfo);

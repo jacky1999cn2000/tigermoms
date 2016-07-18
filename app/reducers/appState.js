@@ -2,7 +2,12 @@
 
 import {fromJS, Map} from 'immutable';
 
-const appState = (state = Map({genderModalVisible:false,contentOffset:{x:0,y:0}}), action) => {
+const appState = (state = Map({
+  genderModalVisible:false,
+  kidAgeModalVisible:false,
+  kidGenderModalVisible:false,
+  contentOffset:{x:0,y:0}
+}), action) => {
   switch (action.type) {
     case 'CHANGE_APPSTATE_ATTRIBUTEVALUES':
       for(let i=0; i<action.names.length; i++){
