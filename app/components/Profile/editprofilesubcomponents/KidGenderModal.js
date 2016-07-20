@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import Miscellaneous from '../../../utils/miscellaneous';
 
 /* actions */
-import { changeUserInfoAttributeValues } from '../../../actions/userInfo';
+import { editUserInfoKidInfo } from '../../../actions/userInfo';
 import { changeAppStateAttributeValues } from '../../../actions/appState';
 
 class KidGenderModal extends React.Component {
@@ -27,6 +27,10 @@ class KidGenderModal extends React.Component {
   }
 
   render(){
+
+    let index = this.props.appState.get('kidInfoListIndex');
+    let gender = this.props.userInfo.get('kidInfoList').size > index ? this.props.userInfo.get('kidInfoList').get(index).get('gender') : '女孩';
+
     return (
       <Modal
         animationType='slide'
@@ -37,8 +41,8 @@ class KidGenderModal extends React.Component {
         <View style={[this.props.style, styles.container]}>
           <View style={styles.modalContainer}>
             <Picker
-              selectedValue={"男孩"}
-              onValueChange={(value) => {}}>
+              selectedValue={gender}
+              onValueChange={(value) => {this.props.dispatch(editUserInfoKidInfo(index,'gender',value))}}>
               <Picker.Item label="男孩" value="男孩" />
               <Picker.Item label="女孩" value="女孩" />
             </Picker>

@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import Miscellaneous from '../../../utils/miscellaneous';
 
 /* actions */
-import { changeUserInfoAttributeValues } from '../../../actions/userInfo';
+import { changeUserInfoAttributeValues, addUserInfoKidInfo } from '../../../actions/userInfo';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 const kidsIcon = (<Icon name="child" size={30} color="#FF3366" />);
@@ -34,7 +34,7 @@ class KidsInfo extends React.Component {
   render(){
 
     let kidsList = [];
-    this.props.userInfo.get('kidsList').toArray().forEach((data, index) => {
+    this.props.userInfo.get('kidInfoList').toArray().forEach((data, index) => {
       console.log('data ',data);
       console.log('index ',index);
       let kidDetail = <KidDetail key={index} index={index} data={data} />
@@ -65,7 +65,7 @@ class KidsInfo extends React.Component {
           <TouchableHighlight
             style={styles.addButton}
             underlayColor="transparent"
-            onPress={() => {}}
+            onPress={() => {this.props.dispatch(addUserInfoKidInfo())}}
           >
             {plusIcon}
           </TouchableHighlight>

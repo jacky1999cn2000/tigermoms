@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import Miscellaneous from '../../../utils/miscellaneous';
 
 /* actions */
-import { changeUserInfoAttributeValues } from '../../../actions/userInfo';
+import { editUserInfoKidInfo } from '../../../actions/userInfo';
 import { changeAppStateAttributeValues } from '../../../actions/appState';
 
 class KidAgeModal extends React.Component {
@@ -27,6 +27,10 @@ class KidAgeModal extends React.Component {
   }
 
   render(){
+
+    let index = this.props.appState.get('kidInfoListIndex');
+    let year = this.props.userInfo.get('kidInfoList').size > index ? this.props.userInfo.get('kidInfoList').get(index).get('year') : '2015';
+
     return (
       <Modal
         animationType='slide'
@@ -37,8 +41,8 @@ class KidAgeModal extends React.Component {
         <View style={[this.props.style, styles.container]}>
           <View style={styles.modalContainer}>
             <Picker
-              selectedValue={"2014"}
-              onValueChange={(value) => {}}>
+              selectedValue={year}
+              onValueChange={(value) => {this.props.dispatch(editUserInfoKidInfo(index,'year',value))}}>
               <Picker.Item label="2005" value="2005" />
               <Picker.Item label="2006" value="2006" />
               <Picker.Item label="2007" value="2007" />

@@ -31,3 +31,25 @@ export const changeUserInfoAttributeValues = (names,values) => {
     values
   };
 }
+
+export const addUserInfoKidInfo = () => {
+  return {
+    type: TYPES.ADD_USERINFO_KIDINFO
+  };
+}
+
+export const removeUserInfoKidInfo = (index) => {
+  return {
+    type: TYPES.REMOVE_USERINFO_KIDINFO,
+    index
+  };
+}
+
+export const editUserInfoKidInfo = (index,attribute,value) => {
+  return {
+    type: TYPES.EDIT_USERINFO_KIDINFO,
+    index,
+    attribute,
+    value
+  };
+}

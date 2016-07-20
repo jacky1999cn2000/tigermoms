@@ -15,13 +15,14 @@ import { connect } from 'react-redux';
 import Miscellaneous from '../../../utils/miscellaneous';
 
 /* actions */
-import { changeAttributeValues } from '../../../actions/userInfo';
+import { removeUserInfoKidInfo } from '../../../actions/userInfo';
 import { changeAppStateAttributeValues } from '../../../actions/appState';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 const heartIcon = (<Icon name="heart" size={20} color="#FF3366" />);
 const boyIcon = (<Icon name="mars" size={20} color="#FF3366" />);
 const girlIcon = (<Icon name="venus" size={20} color="#FF3366" />);
+const removeIcon = (<Icon name="minus-circle" size={20} color="#FF3366" />);
 
 class KidDetail extends React.Component {
 
@@ -30,8 +31,8 @@ class KidDetail extends React.Component {
   }
 
   render(){
-    let genderIcon = this.props.data.gender == '男孩' ? boyIcon : girlIcon;
-    
+    let genderIcon = this.props.data.get('gender') == '男孩' ? boyIcon : girlIcon;
+
     return (
       <View style={styles.kidDetail}>
         <View style={styles.iconContainer}>
@@ -46,10 +47,10 @@ class KidDetail extends React.Component {
           <TouchableHighlight
             style={styles.kidDetailButton}
             underlayColor="grey"
-            onPress={() => {this.props.dispatch(changeAppStateAttributeValues(['kidAgeModalVisible'],[!this.props.appState.get('kidAgeModalVisible')]))}}
+            onPress={() => {this.props.dispatch(changeAppStateAttributeValues(['kidAgeModalVisible','kidInfoListIndex'],[!this.props.appState.get('kidAgeModalVisible'),this.props.index]))}}
           >
             <Text style={styles.textStyle, {color:'white'}}>
-              {this.props.data.year}
+              {this.props.data.get('year')}
             </Text>
           </TouchableHighlight>
         </View>
@@ -58,19 +59,29 @@ class KidDetail extends React.Component {
             是一个
           </Text>
         </View>
+        <View style={styles.iconContainer}>
+          {genderIcon}
+        </View>
         <View style={styles.kidDetailButtonContainer}>
           <TouchableHighlight
             style={styles.kidDetailButton}
             underlayColor="grey"
-            onPress={() => {this.props.dispatch(changeAppStateAttributeValues(['kidGenderModalVisible'],[!this.props.appState.get('kidGenderModalVisible')]))}}
+            onPress={() => {this.props.dispatch(changeAppStateAttributeValues(['kidGenderModalVisible','kidInfoListIndex'],[!this.props.appState.get('kidGenderModalVisible'),this.props.index]))}}
           >
             <Text style={styles.textStyle, {color:'white'}}>
-              {this.props.data.gender}
+              {this.props.data.get('gender')}
             </Text>
           </TouchableHighlight>
         </View>
-        <View style={styles.iconContainer}>
-          {genderIcon}
+
+        <View style={styles.removeIconContainer}>
+          <TouchableHighlight
+            style={[styles.kidDetailButton,{backgroundColor:"transparent"}]}
+            underlayColor="grey"
+            onPress={() => {this.props.dispatch(removeUserInfoKidInfo(this.props.index))}}
+          >
+            {removeIcon}
+          </TouchableHighlight>
         </View>
       </View>
     );
@@ -115,7 +126,11 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: 14,
     color: 'grey'
-  }
+  },
+  removeIconContainer: {
+    marginLeft: 10,
+    marginRight: 5
+  },
 });
 
 KidDetail = connect(
