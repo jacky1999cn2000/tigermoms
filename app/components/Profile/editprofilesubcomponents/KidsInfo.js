@@ -46,7 +46,7 @@ class KidsInfo extends React.Component {
               <View style={styles.kidsInfoContainer}>
                 {plusIconInactive}
                 <View style={styles.smallTextContainer}>
-                  <Text style={styles.smallText}>* 点击+添加孩子信息,更便捷地找到合适的玩伴</Text>
+                  <Text style={styles.smallText}>* 如果你希望为孩子找到玩伴,请将"{parentRole}"设置打开</Text>
                 </View>
               </View>
               <View style={styles.kidsList} />
@@ -62,7 +62,7 @@ class KidsInfo extends React.Component {
                   {plusIcon}
                 </TouchableHighlight>
                 <View style={styles.smallTextContainer}>
-                  <Text style={styles.smallText}>* 点击+添加孩子信息,更便捷地找到合适的玩伴</Text>
+                  <Text style={styles.smallText}>* 点击+添加孩子年龄和性别,更便捷地找到合适的玩伴</Text>
                 </View>
               </View>
 

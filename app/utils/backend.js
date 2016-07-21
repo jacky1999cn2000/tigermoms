@@ -61,6 +61,43 @@ module.exports = {
     }catch(ex){
       console.error(ex);
     }
+  },
+
+  createUserInfo: async function(username,nickname,gender,city,county,address,longitude,latitude,kidInfoList,
+  introduction,wechat,weibo,facebook,isWechatPrivate,isWeiboPrivate,isFacebookPrivate,hasKids){
+    let url = `${rootUrl}/userinfo/create`;
+
+    try{
+      let response = await fetch(url,{
+        method:'POST',
+        headers:{
+          'Accept':'application/json',
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          username: username,
+          nickname: nickname,
+          gender: gender,
+          city: city,
+          county: county,
+          address: address,
+          longitude: longitude,
+          latitude: latitude,
+          kidInfoList: kidInfoList,
+          introduction: introduction,
+          wechat: wechat,
+          weibo: weibo,
+          facebook: facebook,
+          isWechatPrivate: isWechatPrivate,
+          isWeiboPrivate: isWeiboPrivate,
+          isFacebookPrivate: isFacebookPrivate,
+          hasKids: hasKids
+        })
+      });
+      return response;
+    }catch(ex){
+      console.error(ex);
+    }
   }
 
 }

@@ -21,13 +21,14 @@ import ContentTwo from './editprofilesubcomponents/ContentTwo';
 
 /* utils */
 import Miscellaneous from '../../utils/miscellaneous';
+import Backend from '../../utils/backend';
 
 class EditProfile extends React.Component {
   constructor(){
     super(...arguments);
     this.state = {
       //控制信息
-      step: 2,
+      step: 1,
 
     }
   }
@@ -65,7 +66,7 @@ class EditProfile extends React.Component {
     );
   }
 
-  buttonClick(){
+  async buttonClick(){
     if(this.state.step == 1){
       if (Miscellaneous.isUndefined(this.props.userInfo.get('nickname'))) {
         Alert.alert('请填写昵称');
@@ -85,7 +86,43 @@ class EditProfile extends React.Component {
         this.setState({step:2});
       }
     }else{
-      this.props.navigator.resetTo({name:'app'});
+      if(!Miscellaneous.isUndefined(this.props.userInfo.get('hasKids')) && this.props.userInfo.get('hasKids') && this.props.userInfo.get('kidInfoList').size == 0){
+        let parentRole = this.props.userInfo.get('gender') == '男' ? '我是一个爸爸' : '我是一个妈妈';
+        Alert.alert('请添加孩子的信息,或者请将\'' + parentRole + '\'选项关闭');
+      }else{
+        //required
+        let username = this.props.userInfo.get('username');
+        let nickname = this.props.userInfo.get('nickname');
+        let gender = this.props.userInfo.get('gender');
+        let city = this.props.userInfo.get('city');
+        let county = this.props.userInfo.get('county');
+        let address = this.props.userInfo.get('address');
+        let longitude = this.props.userInfo.get('longitude');
+        let latitude = this.props.userInfo.get('latitude');
+        let kidInfoList = JSON.stringify(this.props.userInfo.get('kidInfoList').toJSON());
+
+        //optional
+        let introduction = Miscellaneous.isUndefined(this.props.userInfo.get('introduction')) ? ' ' : this.props.userInfo.get('introduction');
+        let wechat = Miscellaneous.isUndefined(this.props.userInfo.get('wechat')) ? ' ' : this.props.userInfo.get('wechat');
+        let weibo = Miscellaneous.isUndefined(this.props.userInfo.get('weibo')) ? ' ' : this.props.userInfo.get('weibo');
+        let facebook = Miscellaneous.isUndefined(this.props.userInfo.get('facebook')) ? ' ' : this.props.userInfo.get('facebook');
+        let isWechatPrivate = Miscellaneous.isUndefined(this.props.userInfo.get('isWechatPrivate')) ? false : this.props.userInfo.get('isWechatPrivate');
+        let isWeiboPrivate = Miscellaneous.isUndefined(this.props.userInfo.get('isWeiboPrivate')) ? false : this.props.userInfo.get('isWeiboPrivate');
+        let isFacebookPrivate = Miscellaneous.isUndefined(this.props.userInfo.get('isFacebookPrivate')) ? false : this.props.userInfo.get('isFacebookPrivate');
+        let hasKids = Miscellaneous.isUndefined(this.props.userInfo.get('hasKids')) ? false : this.props.userInfo.get('hasKids');
+
+        let result = await Backend.createUserInfo(username,nickname,gender,city,county,address,longitude,latitude,kidInfoList,
+                      introduction,wechat,weibo,facebook,isWechatPrivate,isWeiboPrivate,isFacebookPrivate,hasKids);
+        let resultJson = await result.json();
+
+        if(result.status != 200){
+          //this.setState({isLoading: false});
+          Alert.alert(resultJson.message);
+        }else{
+          this.props.navigator.resetTo({name:'app'});
+        }
+
+      }
     }
   }
 }
