@@ -22,7 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const heartIcon = (<Icon name="heart" size={20} color="#FF3366" />);
 const boyIcon = (<Icon name="mars" size={20} color="#FF3366" />);
 const girlIcon = (<Icon name="venus" size={20} color="#FF3366" />);
-const removeIcon = (<Icon name="minus-circle" size={20} color="#FF3366" />);
+const removeIcon = (<Icon name="minus-circle" size={20} color="#cc0000" />);
 
 class KidDetail extends React.Component {
 

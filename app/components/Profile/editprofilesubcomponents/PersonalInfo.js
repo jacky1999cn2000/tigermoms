@@ -24,22 +24,33 @@ class PersonalInfo extends React.Component {
 
   render(){
     return (
-      <View style={this.props.style}>
-        <TextInput
-          placeholder="用一句话介绍一下你自己 (选填)"
-          placeholderTextColor="gray"
-          multiline={true}
-          style={[styles.textInputStyle]}
-          onChangeText={(value) => {this.props.dispatch(changeUserInfoAttributeValues('introduction',value))}}
-          autoCapitalize="none"
-          value={Miscellaneous.safelyRenderValue(this.props.userInfo.get('introduction'))}
-        />
+        <View>
+          <View style={styles.componentContainer}>
+            <TextInput
+              placeholder="用一句话介绍一下你自己 (选填)"
+              placeholderTextColor="gray"
+              multiline={true}
+              style={[styles.textInputStyle]}
+              onChangeText={(value) => {this.props.dispatch(changeUserInfoAttributeValues('introduction',value))}}
+              autoCapitalize="none"
+              value={Miscellaneous.safelyRenderValue(this.props.userInfo.get('introduction'))}
+            />
+          </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  componentContainer: {
+    height: 30,
+    marginTop: 15,
+    marginBottom: 5,
+    marginHorizontal: 10,
+    borderWidth: 1,
+    borderBottomColor: '#CCC',
+    borderColor: 'transparent'
+  },
   textInputStyle: {
     flex: 1,
     fontSize: 14

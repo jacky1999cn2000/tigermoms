@@ -114,26 +114,28 @@ class LocationInfo extends React.Component {
     ) : null;
 
     return (
-      <View style={this.props.style}>
-        <SegmentedControls
-          tint= {'#FF3366'}
-          options={ options }
-          onSelection={this.onLocationOptionSelection.bind(this)}
-          selectedOption={this.state.locationOption}
-        />
-        {locationView}
-        <View style={styles.spinner}>
-          {spinner}
-        </View>
-          {addressView}
-        <MapView
-          region={mapRegion}
-          annotations={[pin]}
-          style={styles.mapStyle}
-        >
-        </MapView>
-        <View style={styles.mapTextContainer}>
-          <Text style={styles.smallText}>定位你居住的城市, 可以让别人更方便地找到你, 同时也让你更方便地找到别人</Text>
+      <View>
+        <View style={styles.componentContainer}>
+          <SegmentedControls
+            tint= {'#FF3366'}
+            options={ options }
+            onSelection={this.onLocationOptionSelection.bind(this)}
+            selectedOption={this.state.locationOption}
+          />
+          {locationView}
+          <View style={styles.spinner}>
+            {spinner}
+          </View>
+            {addressView}
+          <MapView
+            region={mapRegion}
+            annotations={[pin]}
+            style={styles.mapStyle}
+          >
+          </MapView>
+          <View style={styles.mapTextContainer}>
+            <Text style={styles.smallText}>定位你居住的城市, 可以让别人更方便地找到你, 同时也让你更方便地找到别人</Text>
+          </View>
         </View>
       </View>
     );
@@ -229,6 +231,11 @@ class LocationInfo extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  componentContainer: {
+    marginTop: 10,
+    marginHorizontal: 10,
+    backgroundColor: 'white'
+  },
   mapStyle: {
     height: 80,
     marginTop: 10

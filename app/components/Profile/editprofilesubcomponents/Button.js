@@ -8,15 +8,6 @@ import {
   TouchableHighlight
 } from 'react-native';
 
-/* redux connect */
-import { connect } from 'react-redux';
-//
-// /* utils */
-// import Miscellaneous from '../../../utils/miscellaneous';
-//
-// /* actions */
-// import { changeAttributeValues } from '../../../actions/userInfo';
-
 class Button extends React.Component {
 
   constructor(){
@@ -24,37 +15,40 @@ class Button extends React.Component {
   }
 
   render(){
+
+    let buttonText = this.props.step == 1 ? '下一步' : '进 入';
+
     return (
       <TouchableHighlight
-        style={this.props.style}
+        style={styles.componentContainer}
         underlayColor="grey"
         onPress={this.onClick.bind(this)}
       >
         <Text style={styles.buttonText}>
-          下一步
+          {buttonText}
         </Text>
       </TouchableHighlight>
     );
   }
 
   onClick(){
-    this.props.nextStep();
+    this.props.buttonClick();
   }
 }
 
 const styles = StyleSheet.create({
+  componentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    marginVertical: 50,
+    marginHorizontal: 20,
+    backgroundColor: '#FF3366',
+    borderRadius: 2
+  },
   buttonText: {
     color: 'white'
   }
 });
-
-Button = connect(
-  state => {
-    return { userInfo:state.userInfo };
- },
- dispatch => {
-    return { dispatch }
- }
-)(Button)
 
 export default Button;

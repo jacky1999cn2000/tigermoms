@@ -4,7 +4,8 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 
 /* redux connect */
@@ -18,12 +19,15 @@ import Header from './editprofilesubcomponents/Header';
 import ContentOne from './editprofilesubcomponents/ContentOne';
 import ContentTwo from './editprofilesubcomponents/ContentTwo';
 
+/* utils */
+import Miscellaneous from '../../utils/miscellaneous';
+
 class EditProfile extends React.Component {
   constructor(){
     super(...arguments);
     this.state = {
       //控制信息
-      step: 1,
+      step: 2,
 
     }
   }
@@ -50,8 +54,8 @@ class EditProfile extends React.Component {
 
   render(){
     let content = this.state.step == 1 ?
-      <ContentOne style={styles.content} nextStep={this.nextStep.bind(this)} /> :
-      <ContentTwo style={styles.content} nextStep={this.nextStep.bind(this)} />;
+      <ContentOne style={styles.content} step={this.state.step} buttonClick={this.buttonClick.bind(this)} /> :
+      <ContentTwo style={styles.content} step={this.state.step} buttonClick={this.buttonClick.bind(this)} />;
 
     return (
         <View style={styles.container}>
@@ -61,8 +65,28 @@ class EditProfile extends React.Component {
     );
   }
 
-  nextStep(){
-    this.setState({step:2});
+  buttonClick(){
+    if(this.state.step == 1){
+      if (Miscellaneous.isUndefined(this.props.userInfo.get('nickname'))) {
+        Alert.alert('请填写昵称');
+      }else if (
+        Miscellaneous.isUndefined(this.props.userInfo.get('gender')) ||
+        this.props.userInfo.get('gender') == '请选择性别') {
+        Alert.alert('请选择性别');
+      }else if (
+        Miscellaneous.isUndefined(this.props.userInfo.get('address')) ||
+        Miscellaneous.isUndefined(this.props.userInfo.get('city')) ||
+        Miscellaneous.isUndefined(this.props.userInfo.get('county')) ||
+        Miscellaneous.isUndefined(this.props.userInfo.get('longitude')) ||
+        Miscellaneous.isUndefined(this.props.userInfo.get('latitude'))
+      ){
+        Alert.alert('请通过邮编或手机定位居住城市');
+      }else{
+        this.setState({step:2});
+      }
+    }else{
+      this.props.navigator.resetTo({name:'app'});
+    }
   }
 }
 
@@ -81,6 +105,13 @@ const styles = StyleSheet.create({
   }
 });
 
-EditProfile = connect()(EditProfile)
+EditProfile = connect(
+  state => {
+    return { userInfo:state.userInfo };
+  },
+  dispatch => {
+    return { dispatch }
+  }
+)(EditProfile)
 
 export default EditProfile;

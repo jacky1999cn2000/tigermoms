@@ -18,6 +18,10 @@ module.exports = {
     }else{
       return value;
     }
+  },
+
+  isUndefined(value){
+    return typeof value == 'undefined';
   }
 
 }

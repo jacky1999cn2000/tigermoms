@@ -24,6 +24,7 @@ import { changeUserInfoAttributeValues, addUserInfoKidInfo } from '../../../acti
 import Icon from 'react-native-vector-icons/FontAwesome';
 const kidsIcon = (<Icon name="child" size={30} color="#FF3366" />);
 const plusIcon = (<Icon name="plus-circle" size={50} color="#FF3366" />);
+const plusIconInactive = (<Icon name="plus-circle" size={50} color="grey" />);
 
 class KidsInfo extends React.Component {
 
@@ -33,13 +34,43 @@ class KidsInfo extends React.Component {
 
   render(){
 
+    let parentRole = this.props.userInfo.get('gender') == '男' ? '我是一个爸爸' : '我是一个妈妈';
     let kidsList = [];
     this.props.userInfo.get('kidInfoList').toArray().forEach((data, index) => {
-      console.log('data ',data);
-      console.log('index ',index);
       let kidDetail = <KidDetail key={index} index={index} data={data} />
       kidsList.push(kidDetail);
     });
+
+    let kidInfoListView = ( Miscellaneous.isUndefined(this.props.userInfo.get('hasKids')) || this.props.userInfo.get('hasKids') == false) ? (
+            <View>
+              <View style={styles.kidsInfoContainer}>
+                {plusIconInactive}
+                <View style={styles.smallTextContainer}>
+                  <Text style={styles.smallText}>* 点击+添加孩子信息,更便捷地找到合适的玩伴</Text>
+                </View>
+              </View>
+              <View style={styles.kidsList} />
+            </View>
+          ) : (
+            <View>
+              <View style={styles.kidsInfoContainer}>
+                <TouchableHighlight
+                  style={styles.addButton}
+                  underlayColor="transparent"
+                  onPress={() => {this.props.dispatch(addUserInfoKidInfo())}}
+                >
+                  {plusIcon}
+                </TouchableHighlight>
+                <View style={styles.smallTextContainer}>
+                  <Text style={styles.smallText}>* 点击+添加孩子信息,更便捷地找到合适的玩伴</Text>
+                </View>
+              </View>
+
+              <View style={styles.kidsList}>
+                {kidsList}
+              </View>
+            </View>
+          );
 
     return (
       <View>
@@ -50,7 +81,7 @@ class KidsInfo extends React.Component {
             </View>
             <View style={styles.textContainer}>
               <Text style={styles.textStyle}>
-                我是一个 爸爸 | 妈妈
+                {parentRole}
               </Text>
             </View>
           </View>
@@ -61,22 +92,7 @@ class KidsInfo extends React.Component {
           </View>
         </View>
 
-        <View style={styles.kidsInfoContainer}>
-          <TouchableHighlight
-            style={styles.addButton}
-            underlayColor="transparent"
-            onPress={() => {this.props.dispatch(addUserInfoKidInfo())}}
-          >
-            {plusIcon}
-          </TouchableHighlight>
-          <View style={styles.smallTextContainer}>
-            <Text style={styles.smallText}>* 点击+添加孩子信息,更便捷地找到合适的玩伴</Text>
-          </View>
-        </View>
-
-        <View style={styles.kidsList}>
-          {kidsList}
-        </View>
+        {kidInfoListView}
 
       </View>
     );

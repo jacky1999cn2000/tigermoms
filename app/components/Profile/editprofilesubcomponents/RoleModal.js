@@ -39,8 +39,9 @@ class RoleModal extends React.Component {
             <Picker
               selectedValue={Miscellaneous.safelyRenderValue(this.props.userInfo.get('gender'))}
               onValueChange={(value) => {this.props.dispatch(changeUserInfoAttributeValues(['gender'],[value]))}}>
-              <Picker.Item label="男士" value="男士" />
-              <Picker.Item label="女士" value="女士" />
+              <Picker.Item label="请选择性别" value="请选择性别" />
+              <Picker.Item label="男" value="男" />
+              <Picker.Item label="女" value="女" />
             </Picker>
 
             <TouchableHighlight

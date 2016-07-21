@@ -27,57 +27,65 @@ class BasicInfo extends React.Component {
   }
 
   render(){
-    return (
-      <View style={this.props.style}>
+    let gender = (Miscellaneous.isUndefined(this.props.userInfo.get('gender')) || this.props.userInfo.get('gender') == '请选择性别') ? '请选择性别 (必填)' : this.props.userInfo.get('gender');
+    let genderStyle = gender == '请选择性别 (必填)' ? {color:'gray'} : {color:'black'};
 
-        <TouchableHighlight
-          underlayColor="white"
-          onPress={()=>{console.log('pressed');}}
-        >
-          <View style={styles.imageContainer}>
-            <Image style={styles.image} source={require('../../../images/bg3.jpg')} />
-            <View style={styles.imageCaption}>
-              <Text style={styles.smallText}>
-                编辑
+    return (
+      <View>
+        <View style={styles.componentContainer}>
+
+          <TouchableHighlight
+            underlayColor="white"
+            onPress={()=>{console.log('pressed');}}
+          >
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={require('../../../images/bg3.jpg')} />
+              <View style={styles.imageCaption}>
+                <Text style={styles.smallText}>
+                  编辑
+                </Text>
+              </View>
+            </View>
+          </TouchableHighlight>
+
+          <View style={styles.basicInfoContainer}>
+            <View style={styles.basicInfo}>
+              <Text style={styles.textStyle}>
+                {this.props.userInfo.get('username')}
               </Text>
             </View>
+            <View style={styles.basicInfo}>
+              <TextInput
+                placeholder="请输入昵称 (必填)"
+                placeholderTextColor="gray"
+                style={styles.textInputStyle}
+                onChangeText={(value) => {this.props.dispatch(changeUserInfoAttributeValues(['nickname'],[value]))}}
+                autoCapitalize="none"
+                value={Miscellaneous.safelyRenderValue(this.props.userInfo.get('nickname'))}
+              />
+            </View>
+            <View style={styles.basicInfo}>
+              <TouchableHighlight
+                underlayColor="white"
+                onPress={() => {this.props.dispatch(changeAppStateAttributeValues(['genderModalVisible'],[!this.props.appState.get('genderModalVisible')]))}}
+              >
+                <Text style={[styles.textStyle,genderStyle]}>
+                  {gender}
+                </Text>
+              </TouchableHighlight>
+            </View>
           </View>
-        </TouchableHighlight>
 
-        <View style={styles.basicInfoContainer}>
-          <View style={styles.basicInfo}>
-            <Text style={styles.textStyle}>
-              {this.props.userInfo.get('username')}
-            </Text>
-          </View>
-          <View style={styles.basicInfo}>
-            <TextInput
-              placeholder="请输入昵称 (必填)"
-              placeholderTextColor="gray"
-              style={styles.textInputStyle}
-              onChangeText={(value) => {this.props.dispatch(changeUserInfoAttributeValues(['nickname'],[value]))}}
-              autoCapitalize="none"
-              value={Miscellaneous.safelyRenderValue(this.props.userInfo.get('nickname'))}
-            />
-          </View>
-          <View style={styles.basicInfo}>
-            <TouchableHighlight
-              underlayColor="white"
-              onPress={() => {this.props.dispatch(changeAppStateAttributeValues(['genderModalVisible'],[!this.props.appState.get('genderModalVisible')]))}}
-            >
-              <Text style={[styles.textStyle,{color:'gray'}]}>
-                请选择性别 (必填)
-              </Text>
-            </TouchableHighlight>
-          </View>
         </View>
-
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  componentContainer: {
+    flexDirection: 'row'
+  },
   // imageContainer (image, imageCaption)
   imageContainer: {
     flex: 0.3
@@ -116,7 +124,8 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: 'black',
-    fontSize: 14
+    fontSize: 14,
+    width: 500
   },
   textInputStyle: {
     flex: 1,

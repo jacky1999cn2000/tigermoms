@@ -14,6 +14,7 @@ import ContactInfo from './ContactInfo';
 import KidsInfo from './KidsInfo';
 import KidAgeModal from './KidAgeModal';
 import KidGenderModal from './KidGenderModal';
+import Button from './Button';
 
 class ContentTwo extends React.Component {
 
@@ -31,19 +32,33 @@ class ContentTwo extends React.Component {
         <KidGenderModal style={this.props.style} />
         <ContactInfo />
         <KidsInfo />
+        <Button step={this.props.step} buttonClick={this.props.buttonClick} />
       </ScrollView>
     );
   }
 }
 
+const styles = StyleSheet.create({
+  buttonStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    marginVertical: 40,
+    marginHorizontal: 20,
+    backgroundColor: '#FF3366',
+    borderRadius: 2
+  }
+});
+
+
 ContentTwo = connect(
   state => {
     console.log('ContentTwos redux state',state);
     return { userInfo:state.userInfo, appState:state.appState };
- },
- dispatch => {
+  },
+  dispatch => {
     return { dispatch }
- }
+  }
 )(ContentTwo)
 
 export default ContentTwo;
